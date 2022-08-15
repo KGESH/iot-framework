@@ -14,7 +14,12 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@iot-framework/core": ["libs/core/src/index.ts"],
+      "@iot-framework/entities": ["libs/entities/src/index.ts"],
+      "@iot-framework/modules": ["libs/modules/src/index.ts"],
+      "@iot-framework/utils": ["libs/utils/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }

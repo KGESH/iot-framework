@@ -1,0 +1,69 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/device/src",
+  "projectType": "application",
+  "targets": {
+    "deploy": {
+      "builder": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": [
+          "nx run-many --target=build --project=device --parallel --configuration=production",
+          "docker build -f ./apps/device/Dockerfile . -t device"
+        ],
+        "parallel": true
+      }
+    },
+    "build": {
+      "executor": "@nrwl/node:webpack",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/apps/device",
+        "main": "apps/device/src/main.ts",
+        "tsConfig": "apps/device/tsconfig.app.json",
+        "assets": ["apps/device/src/assets"],
+        "generatePackageJson": true
+      },
+      "configurations": {
+        "production": {
+          "generatePackageJson": true,
+          "optimization": true,
+          "extractLicenses": true,
+          "inspect": false,
+          "fileReplacements": [
+            {
+              "replace": "libs/core/src/config/environments/environment.ts",
+              "with": "libs/core/src/config/environments/environment.prod.ts"
+            }
+          ]
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/node:node",
+      "options": {
+        "buildTarget": "device:build"
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "device:build:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/device/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/apps/device"],
+      "options": {
+        "jestConfig": "apps/device/jest.config.ts",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

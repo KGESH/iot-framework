@@ -1,11 +1,10 @@
 import { Module } from '@nestjs/common';
-
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { CoreModule } from '@iot-framework/core';
+import { HealthController } from './health.controller';
+import { MicroserviceRequestModule, RedisModule } from '@iot-framework/modules';
 
 @Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [CoreModule, RedisModule, MicroserviceRequestModule],
+  controllers: [HealthController],
 })
 export class AppModule {}

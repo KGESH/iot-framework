@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  api:
+    image: api
+    ports:
+      - "7777:7777"
+    links:
+      - device
+
+  device:
+    image: device
+    container_name: device
+    ports:
+      - "8000:8000"
+
+  mosquitto:
+    build:
+      context: apps/mosquitto
+    ports:
+      - "1883:1883"
+      - "8883:8883"
+
+
