@@ -1,5 +1,5 @@
 import { Global, Module } from '@nestjs/common';
-import { SecretModule } from './config/secret.module';
+import { SecretModule } from './secrets/secret.module';
 
 @Global()
 @Module({
