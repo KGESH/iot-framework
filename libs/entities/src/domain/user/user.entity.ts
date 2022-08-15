@@ -1,4 +1,5 @@
 import {
+  BeforeInsert,
   Column,
   CreateDateColumn,
   Entity,
@@ -8,6 +9,8 @@ import {
 import { IsDate, IsEmail, IsEnum, IsNumber, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { UserRoles } from './types/user-role.enum';
+import { genSalt, hash } from 'bcrypt';
+import { EBcrypt } from './types/bcrypt.enum';
 
 @Entity({ name: 'users' })
 export class User {
@@ -54,4 +57,10 @@ export class User {
   @CreateDateColumn({ type: 'timestamptz', name: 'create_at' })
   @IsDate()
   createAt: Date;
+
+  @BeforeInsert()
+  async hashPassword() {
+    const salt = await genSalt(EBcrypt.HASH_ROUNDS);
+    this.password = await hash(this.password, salt);
+  }
 }
