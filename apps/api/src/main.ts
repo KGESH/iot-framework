@@ -1,4 +1,4 @@
-import { Logger } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app/app.module';
 import { ISecretService } from '@iot-framework/core';
@@ -10,8 +10,21 @@ async function bootstrap() {
 
   const globalPrefix = 'api';
   app.setGlobalPrefix(globalPrefix);
-  const port = secretService.API_GATEWAY_PORT || 3333;
-  const url = secretService.API_GATEWAY_URL || 'localhost';
+  const url = secretService.API_GATEWAY_URL;
+  const port = secretService.API_GATEWAY_PORT;
+
+  app.enableCors({
+    origin: true,
+    credentials: true,
+  });
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    })
+  );
 
   buildSwagger(app);
   await app.listen(port);
