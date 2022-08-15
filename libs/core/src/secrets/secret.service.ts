@@ -12,6 +12,10 @@ export class SecretService implements ISecretService {
   DEVICE_MS_URL = environment.DEVICE_MS_URL;
   DEVICE_MS_PORT = environment.DEVICE_MS_PORT;
 
+  /** Device Microservice */
+  USER_MS_URL = environment.USER_MS_URL;
+  USER_MS_PORT = environment.USER_MS_PORT;
+
   /** Database */
   DATABASE_TYPE = environment.DATABASE_TYPE;
   DATABASE_HOST = environment.DATABASE_HOST;

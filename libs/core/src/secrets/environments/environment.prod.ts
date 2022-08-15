@@ -14,6 +14,9 @@ export const environment = {
   DEVICE_MS_URL: 'device',
   DEVICE_MS_PORT: 8000,
 
+  USER_MS_URL: '0.0.0.0',
+  USER_MS_PORT: 9000,
+
   DATABASE_TYPE: 'postgres',
   DATABASE_HOST: 'db',
   DATABASE_NAME: 'test',

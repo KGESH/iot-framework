@@ -8,6 +8,11 @@ export enum DEVICE_MS_ENV {
   PORT = 'DEVICE_MS_PORT',
 }
 
+export enum USER_MS_ENV {
+  URL = 'USER_MS_URL',
+  PORT = 'USER_MS_PORT',
+}
+
 export enum JWT_ENV {}
 
 export enum DATABASE_ENV {

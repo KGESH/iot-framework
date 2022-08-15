@@ -4,6 +4,7 @@ import {
   DEVICE_MS_ENV,
   MQTT_ENV,
   REDIS_ENV,
+  USER_MS_ENV,
 } from './enum';
 import { DatabaseType } from 'typeorm';
 
@@ -15,6 +16,10 @@ export abstract class ISecretService {
   /** Device Microservice */
   DEVICE_MS_URL: DEVICE_MS_ENV | string;
   DEVICE_MS_PORT: DEVICE_MS_ENV | string | number;
+
+  /** User Microservice */
+  USER_MS_URL: USER_MS_ENV | string;
+  USER_MS_PORT: USER_MS_ENV | string | number;
 
   /** Database */
   DATABASE_TYPE: DATABASE_ENV | DatabaseType | string;
