@@ -7,8 +7,8 @@
       "builder": "@nrwl/workspace:run-commands",
       "options": {
         "commands": [
-          "nx run-many --target=build --project=device --parallel --configuration=production",
-          "docker build -f ./apps/device/Dockerfile . -t device"
+          "nx run-many --target=build --project=user --parallel --configuration=production",
+          "docker build -f ./apps/user/Dockerfile . -t user"
         ],
         "parallel": true
       }
