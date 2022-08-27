@@ -10,15 +10,14 @@ import {
 } from 'typeorm';
 import { IsNumber } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { Master } from '../master/master.entity';
-import { WaterPump } from '../water-pump/water-pump.entity';
-import { Led } from '../led/led.entity';
-import { Thermometer } from '../temperature/thermometer.entity';
-import { Temperature } from '../temperature/temperature.entity';
+import { Master } from '../master';
+import { WaterPump } from '../water-pump';
+import { Led } from '../led';
+import { Thermometer, Temperature } from '../temperature';
 
 @Entity('slaves')
 export class Slave {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ type: 'integer', name: 'id' })
   id: number;
 
   @ApiProperty()
@@ -34,7 +33,6 @@ export class Slave {
   @JoinColumn({ name: 'master_fk', referencedColumnName: 'id' })
   @ManyToOne((type) => Master, (master) => master.slaves, {
     onDelete: 'CASCADE',
-    // eager: true,
   })
   master: Master;
 
