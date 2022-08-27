@@ -27,6 +27,7 @@ export enum ESlaveState {
   THERMOMETER = 'temperature/state',
   WATER_PUMP = 'water/state',
   LED = 'led/state',
+  FAN = 'fan/state',
 }
 
 export const POLLING = 'master/+/polling';
