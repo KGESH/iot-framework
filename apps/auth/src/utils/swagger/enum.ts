@@ -1,4 +1,4 @@
-/** Todo: Fix to user */
+/** Todo: Fix to auth */
 export enum SWAGGER_TAG {
   UTILITY = 'utility',
   MASTER = 'master',

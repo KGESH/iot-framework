@@ -3,6 +3,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app/app.module';
 import { ISecretService } from '@iot-framework/core';
 import { buildSwagger } from './utils/swagger/builder';
+import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -10,7 +11,7 @@ async function bootstrap() {
 
   const globalPrefix = 'api';
   app.setGlobalPrefix(globalPrefix);
-  const url = secretService.API_GATEWAY_URL;
+  const url = secretService.API_GATEWAY_HOST;
   const port = secretService.API_GATEWAY_PORT;
 
   app.enableCors({
@@ -25,6 +26,7 @@ async function bootstrap() {
       transform: true,
     })
   );
+  app.use(cookieParser());
 
   buildSwagger(app);
   await app.listen(port);

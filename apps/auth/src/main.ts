@@ -11,7 +11,7 @@ async function bootstrap() {
   const globalPrefix = 'user';
   app.setGlobalPrefix(globalPrefix);
 
-  const url = secretService.USER_MS_URL;
+  const url = secretService.USER_MS_HOST;
   const port = secretService.USER_MS_PORT;
 
   app.useGlobalPipes(
@@ -21,6 +21,7 @@ async function bootstrap() {
       transform: true,
     })
   );
+  1;
 
   buildSwagger(app);
   await app.listen(port);

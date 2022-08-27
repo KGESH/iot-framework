@@ -1,19 +1,21 @@
 import {
   BeforeInsert,
   Column,
-  CreateDateColumn,
   Entity,
   Index,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { IsDate, IsEmail, IsEnum, IsNumber, IsString } from 'class-validator';
+import { IsEmail, IsEnum, IsNumber, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { UserRoles } from './types/user-role.enum';
 import { genSalt, hash } from 'bcrypt';
 import { EBcrypt } from './types/bcrypt.enum';
+import { BaseTimeEntity } from '../base-time.entity';
+import { Master } from '@iot-framework/entities';
 
 @Entity({ name: 'users' })
-export class User {
+export class User extends BaseTimeEntity {
   @ApiProperty({ example: 1234, description: 'User id' })
   @PrimaryGeneratedColumn({ type: 'integer', name: 'id' })
   @IsNumber()
@@ -53,10 +55,9 @@ export class User {
   @IsEnum(UserRoles)
   role: UserRoles;
 
-  @ApiProperty({ example: new Date(), description: 'Date timestamptz' })
-  @CreateDateColumn({ type: 'timestamptz', name: 'create_at' })
-  @IsDate()
-  createAt: Date;
+  @ApiProperty({ example: Master, description: `User's master board` })
+  @OneToMany((type) => Master, (master) => master.id)
+  masters: Master[];
 
   @BeforeInsert()
   async hashPassword() {

@@ -12,7 +12,7 @@ async function bootstrap() {
   app.setGlobalPrefix(globalPrefix);
 
   const port = secretService.DEVICE_MS_PORT;
-  const url = secretService.DEVICE_MS_URL;
+  const url = secretService.DEVICE_MS_HOST;
 
   app.useGlobalPipes(
     new ValidationPipe({

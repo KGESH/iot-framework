@@ -3,11 +3,11 @@
   "version": 2,
   "projects": {
     "api": "apps/api",
+    "auth": "apps/auth",
     "core": "libs/core",
     "device": "apps/device",
     "entities": "libs/entities",
     "modules": "libs/modules",
-    "user": "apps/user",
     "utils": "libs/utils"
   }
 }

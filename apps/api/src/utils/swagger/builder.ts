@@ -16,6 +16,7 @@ export const buildSwagger = (app: INestApplication): void => {
     .addTag(SWAGGER_TAG.THERMOMETER)
     .addTag(SWAGGER_TAG.WATER_PUMP)
     .addTag(SWAGGER_TAG.LED)
+    .addBearerAuth()
     .build();
 
   const swaggerCustomOptions: SwaggerCustomOptions = {

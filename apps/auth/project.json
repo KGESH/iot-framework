@@ -1,14 +1,14 @@
 {
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "apps/user/src",
+  "sourceRoot": "apps/auth/src",
   "projectType": "application",
   "targets": {
     "deploy": {
-      "builder": "@nrwl/workspace:run-commands",
+      "executor": "@nrwl/workspace:run-commands",
       "options": {
         "commands": [
           "nx run-many --target=build --project=user --parallel --configuration=production",
-          "docker build -f ./apps/user/Dockerfile . -t user"
+          "docker build -f ./apps/auth/Dockerfile . -t user"
         ],
         "parallel": true
       }
@@ -17,10 +17,10 @@
       "executor": "@nrwl/node:webpack",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/apps/user",
-        "main": "apps/user/src/main.ts",
-        "tsConfig": "apps/user/tsconfig.app.json",
-        "assets": ["apps/user/src/assets"],
+        "outputPath": "dist/apps/auth",
+        "main": "apps/auth/src/main.ts",
+        "tsConfig": "apps/auth/tsconfig.app.json",
+        "assets": ["apps/auth/src/assets"],
         "generatePackageJson": true
       },
       "configurations": {
@@ -41,11 +41,11 @@
     "serve": {
       "executor": "@nrwl/node:node",
       "options": {
-        "buildTarget": "user:build"
+        "buildTarget": "auth:build"
       },
       "configurations": {
         "production": {
-          "buildTarget": "user:build:production"
+          "buildTarget": "auth:build:production"
         }
       }
     },
@@ -53,14 +53,14 @@
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["apps/user/**/*.ts"]
+        "lintFilePatterns": ["apps/auth/**/*.ts"]
       }
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/apps/user"],
+      "outputs": ["coverage/apps/auth"],
       "options": {
-        "jestConfig": "apps/user/jest.config.ts",
+        "jestConfig": "apps/auth/jest.config.ts",
         "passWithNoTests": true
       }
     }

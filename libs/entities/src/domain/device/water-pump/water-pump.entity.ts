@@ -5,7 +5,7 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Slave } from '../slave/slave.entity';
+import { Slave } from '../slave';
 
 @Entity('water_pumps')
 export class WaterPump {

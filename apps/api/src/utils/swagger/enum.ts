@@ -8,4 +8,5 @@ export enum SWAGGER_TAG {
   FAN = 'fan',
   NOTIFICATION = 'notification',
   USER = 'user',
+  AUTH = 'auth',
 }

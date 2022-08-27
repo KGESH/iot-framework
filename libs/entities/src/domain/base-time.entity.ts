@@ -3,14 +3,21 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsDate, IsNumber } from 'class-validator';
 
 export abstract class BaseTimeEntity {
   @PrimaryGeneratedColumn()
+  @IsNumber()
   id: number;
 
-  @CreateDateColumn({ type: 'timestamptz' })
+  @ApiProperty({ example: new Date(), description: 'Date timestamptz' })
+  @CreateDateColumn({ type: 'timestamptz', name: 'created_at' })
+  @IsDate()
   createdAt: Date;
 
-  @UpdateDateColumn({ type: 'timestamptz' })
+  @ApiProperty({ example: new Date(), description: 'Date timestamptz' })
+  @UpdateDateColumn({ type: 'timestamptz', name: 'updated_at' })
+  @IsDate()
   updatedAt: Date;
 }
