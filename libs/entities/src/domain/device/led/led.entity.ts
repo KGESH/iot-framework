@@ -6,7 +6,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { BaseTimeEntity } from '../../base-time.entity';
-import { Slave } from '../slave/slave.entity';
+import { Slave } from '../slave';
 
 @Entity('leds')
 export class Led extends BaseTimeEntity {

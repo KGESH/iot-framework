@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Master } from './master.entity';
-import { MasterRepository } from './master.repository';
+import { MasterQueryRepository } from './master-query.repository';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Master])],
-  providers: [MasterRepository],
-  exports: [TypeOrmModule, MasterRepository],
+  providers: [MasterQueryRepository],
+  exports: [TypeOrmModule, MasterQueryRepository],
 })
 export class MasterModule {}

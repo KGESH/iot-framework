@@ -1,6 +1,5 @@
 import {
   Column,
-  CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
@@ -8,10 +7,10 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDate, IsNumber, IsString } from 'class-validator';
+import { IsNumber, IsString } from 'class-validator';
 import { BaseTimeEntity } from '../../base-time.entity';
-import { Slave } from '../slave/slave.entity';
-import { User } from '../../user/user.entity';
+import { Slave } from '../slave';
+import { User } from '../../user';
 
 @Entity('masters')
 export class Master extends BaseTimeEntity {
@@ -25,7 +24,7 @@ export class Master extends BaseTimeEntity {
   masterId: number;
 
   @ApiProperty({ example: 'example', description: 'Example address' })
-  @Column({ name: 'username' })
+  @Column({ name: 'address' })
   @IsString()
   address: string;
 
