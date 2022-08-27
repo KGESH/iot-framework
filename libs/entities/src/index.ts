@@ -1,6 +1,9 @@
-export * from './domain/device/master/master.entity';
-export * from './domain/device/slave/slave.entity';
-export * from './domain/device/led/led.entity';
-export * from './domain/device/led/led.entity';
-export * from './domain/device/water-pump/water-pump.entity';
-export * from './domain/device/temperature/thermometer.entity';
+/** Device Microservice */
+export * from './domain/device/master';
+export * from './domain/device/slave';
+export * from './domain/device/led';
+export * from './domain/device/water-pump';
+export * from './domain/device/temperature';
+
+/** User Microservice */
+export * from './domain/user';
