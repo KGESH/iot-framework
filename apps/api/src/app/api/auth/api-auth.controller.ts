@@ -27,6 +27,8 @@ import {
 import { Tokens } from './decoratos/tokens.decorator';
 import { CreateUserDto } from '@iot-framework/entities';
 import { RefreshTokenDto } from '@iot-framework/modules';
+import { AuthUser } from './decoratos/auth-user.decorator';
+import { AuthUserDto } from './dto/auth-user.dto';
 
 @ApiTags(SWAGGER_TAG.AUTH)
 @Controller('auth-service')
@@ -70,11 +72,9 @@ export class ApiAuthController {
     @Tokens() tokens: TokensDto,
     @Res() res: Response
   ) {
-    const { accessToken, refreshToken, user } = tokens;
+    const { accessToken, refreshToken } = tokens;
 
-    const refreshTokenDto: RefreshTokenDto = { userId: user.id, refreshToken };
-
-    res.cookie('auth-cookie', refreshTokenDto, {
+    res.cookie('auth-cookie', refreshToken, {
       httpOnly: true,
       domain: process.env.COOKIE_DOMAIN,
     });
@@ -83,16 +83,23 @@ export class ApiAuthController {
   }
 
   @Get('signout')
-  async signOut(@Req() req: Request, @Res() res: Response) {
-    const tokens = req.cookies['auth-cookie'];
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  async signOut(
+    @Req() req: Request,
+    @Res() res: Response,
+    @AuthUser() authUser: AuthUserDto
+  ) {
+    const refreshToken = req.cookies['auth-cookie'];
 
-    if (!tokens) {
+    if (!refreshToken) {
       return res.send(
         ResponseEntity.ERROR_WITH('Cookie Not Exist', HttpStatus.NOT_FOUND)
       );
     }
 
-    await this.userService.signOut(tokens.userId);
+    console.log(`Signout User: `, authUser);
+    await this.userService.signOut(authUser.id);
 
     res.clearCookie('auth-cookie', {
       httpOnly: true,

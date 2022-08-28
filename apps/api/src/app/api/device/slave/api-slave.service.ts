@@ -12,33 +12,27 @@ export class ApiSlaveService {
   ) {}
 
   async createSlave(createSlaveDto: CreateSlaveDto) {
-    return this.deviceClientService.post('slave', createSlaveDto);
-    // return lastValueFrom(
-    //   this.httpService.post(
-    //     this.deviceMicroservice.requestUrl('slave'),
-    //     createSlaveDto
-    //   )
-    // );
+    return this.deviceClientService.post('slave', { ...createSlaveDto });
+  }
+
+  async deleteSlave(masterId: number, slaveId: number) {
+    return this.deviceClientService.delete('slave', {
+      params: { masterId, slaveId },
+    });
   }
 
   async getSlaveConfigs(masterId: number, slaveId: number) {
     return this.deviceClientService.get('slave/config', {
       params: { masterId, slaveId },
     });
-    // return lastValueFrom(
-    //   this.httpService.get(this.deviceMicroservice.requestUrl('slave/config'), {
-    //     params: { masterId, slaveId },
-    //   })
-    // );
   }
 
-  async getSlaveState(slaveStateDto: SlaveStateDto) {
-    return this.deviceClientService.post('slave/state', slaveStateDto);
-    // return lastValueFrom(
-    //   this.httpService.post(
-    //     this.deviceMicroservice.requestUrl('slave/state'),
-    //     slaveStateDto
-    //   )
-    // );
+  async getSlaveState(masterId: number, slaveId: number) {
+    return this.deviceClientService.get('slave/state', {
+      params: {
+        masterId,
+        slaveId,
+      },
+    });
   }
 }

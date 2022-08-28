@@ -4,6 +4,7 @@ import { HealthController } from './health.controller';
 import { MqttBrokerModule } from './mqtt/mqtt.module';
 import { DatabaseModule, RedisModule } from '@iot-framework/modules';
 import { DeviceMasterModule } from './master/device-master.module';
+import { DeviceSlaveModule } from './slave/device-slave.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { DeviceMasterModule } from './master/device-master.module';
     RedisModule,
     MqttBrokerModule,
     DeviceMasterModule,
+    DeviceSlaveModule,
   ],
   controllers: [HealthController],
 })

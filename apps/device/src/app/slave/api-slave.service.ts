@@ -39,7 +39,6 @@ export class ApiSlaveService {
       ESlaveTurnPowerTopic.FAN
     );
 
-    /** Todo: Exception handling */
     return {
       waterPumpRunningState,
       waterPumpPowerState,

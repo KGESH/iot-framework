@@ -1,10 +1,10 @@
 import {
   Body,
+  HttpStatus,
   CACHE_MANAGER,
   Controller,
-  Delete,
   Get,
-  HttpStatus,
+  Delete,
   Inject,
   NotFoundException,
   Post,
@@ -16,9 +16,9 @@ import { ApiSlaveService } from './api-slave.service';
 import { CreateSlaveDto } from './dto/create-slave.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { SWAGGER_TAG } from '../../utils/swagger/enum';
-import { DevicePollingService } from '../master/device-polling.service';
-import { ISlaveConfigs } from './types/slave-config';
+import { ISlaveConfigs } from '@iot-framework/entities';
 import { DeviceSlaveService } from './device-slave.service';
+import { ResponseEntity } from '@iot-framework/modules';
 
 @ApiTags(SWAGGER_TAG.SLAVE)
 @Controller('slave')
@@ -26,7 +26,6 @@ export class ApiSlaveController {
   constructor(
     @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
     private readonly slaveService: DeviceSlaveService,
-    private readonly pollingService: DevicePollingService,
     private readonly apiSlaveService: ApiSlaveService
   ) {}
 
@@ -40,31 +39,42 @@ export class ApiSlaveController {
     return createResult;
   }
 
+  @Delete()
+  async deleteSlave(
+    @Query('masterId') masterId: number,
+    @Query('slaveId') slaveId: number
+  ) {
+    return this.slaveService.deleteSlave(masterId, slaveId);
+  }
+
   @Get('config')
   async fetchConfig(
     @Query('masterId') masterId: number,
     @Query('slaveId') slaveId: number
-  ): Promise<ISlaveConfigs> {
-    try {
-      return this.slaveService.getConfigs(masterId, slaveId);
-    } catch (e) {
-      console.log(e);
-    }
+  ): Promise<ResponseEntity<ISlaveConfigs>> {
+    return this.slaveService.getConfigs(masterId, slaveId);
   }
 
   /** Todo: 센서들 상태 캐싱값 받아와서 돌려줌 */
-  @Post('state')
-  async getSlaveState(@Body() slaveStateDto: SlaveStateDto) {
+  @Get('state')
+  async getSlaveState(
+    @Query('masterId') masterId: number,
+    @Query('slaveId') slaveId: number
+  ) {
     try {
-      /* TODO: Validate master id & slave id */
-
-      const sensorStates = await this.apiSlaveService.getSensorsState(
+      const slaveStateDto = new SlaveStateDto(masterId, slaveId);
+      const sensorsState = await this.apiSlaveService.getSensorsState(
         slaveStateDto
       );
 
-      return sensorStates;
+      return ResponseEntity.OK_WITH(sensorsState);
     } catch (e) {
-      console.log(e);
+      /** Todo: Logging */
+      return ResponseEntity.ERROR_WITH_DATA(
+        'Get slave state error!',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        e
+      );
     }
   }
 }
