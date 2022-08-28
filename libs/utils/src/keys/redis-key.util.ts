@@ -65,4 +65,5 @@ export const GenerateAverageKeys = (
   return keys;
 };
 
-export const RefreshTokenKey = (userId: number) => `refresh-token/${userId}`;
+export const GenerateRefreshTokenKey = (userId: number) =>
+  `refresh-token/${userId}`;
