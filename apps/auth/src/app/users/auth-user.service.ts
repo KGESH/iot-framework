@@ -10,7 +10,12 @@ import {
   UserRepository,
 } from '@iot-framework/entities';
 import { JwtService } from '@nestjs/jwt';
-import { AuthUserDto, ResponseEntity, TokensDto } from '@iot-framework/modules';
+import {
+  AuthUserDto,
+  ResponseEntity,
+  SignInDto,
+  TokensDto,
+} from '@iot-framework/modules';
 
 @Injectable()
 export class AuthUserService {
@@ -52,11 +57,50 @@ export class AuthUserService {
     return this.cacheManager.del(key);
   }
 
-  async signIn(authUserDto: AuthUserDto): Promise<TokensDto> {
-    const userId = authUserDto.id;
-    const accessToken = this.getAccessToken(authUserDto);
-    const refreshToken = this.getRefreshToken(userId);
+  async signIn(
+    signInDto: SignInDto
+  ): Promise<ResponseEntity<AuthUserDto | TokensDto>> {
+    const { email, password } = signInDto;
 
+    const validatedResult = await this.validateUser(email, password);
+    const validateFail = validatedResult.statusCode !== HttpStatus.OK;
+    if (validateFail) {
+      return validatedResult;
+    }
+
+    const authUser = validatedResult.data;
+    const tokens = await this.generateTokens(authUser);
+
+    return ResponseEntity.OK_WITH(tokens);
+  }
+
+  private async validateUser(
+    email: string,
+    rawPassword: string
+  ): Promise<ResponseEntity<AuthUserDto>> {
+    const foundUser = await this.userQueryRepository.findOneByEmail(email);
+    if (!foundUser) {
+      return ResponseEntity.ERROR_WITH(
+        `Invalid user!`,
+        HttpStatus.UNAUTHORIZED
+      );
+    }
+
+    const isCorrectPassword = await compare(rawPassword, foundUser.password);
+    if (isCorrectPassword) {
+      const { password, createdAt, ...userWithoutPassword } = foundUser;
+      return ResponseEntity.OK_WITH<AuthUserDto>(userWithoutPassword);
+    }
+
+    return ResponseEntity.ERROR_WITH(`Invalid user!`, HttpStatus.UNAUTHORIZED);
+  }
+
+  private async generateTokens(authUserDto: AuthUserDto): Promise<TokensDto> {
+    const userId = authUserDto.id;
+    const accessToken = this.generateAccessToken(authUserDto);
+    const refreshToken = this.generateRefreshToken(userId);
+
+    /** Todo: save token to database */
     await this.cacheRefreshToken(userId, refreshToken);
 
     return {
@@ -66,11 +110,11 @@ export class AuthUserService {
     };
   }
 
-  private getAccessToken(authUserDto: AuthUserDto) {
+  private generateAccessToken(authUserDto: AuthUserDto) {
     return this.jwtService.sign(authUserDto);
   }
 
-  private getRefreshToken(userId: number) {
+  private generateRefreshToken(userId: number) {
     return this.jwtService.sign(
       { id: userId },
       {
@@ -85,48 +129,14 @@ export class AuthUserService {
     await this.cacheManager.set<string>(key, refreshToken, { ttl: 1209600 }); // 🤔 2주
   }
 
-  async validateUser(
-    email: string,
-    rawPassword: string
-  ): Promise<ResponseEntity<AuthUserDto | null>> {
-    try {
-      const foundUser = await this.userQueryRepository.findOneByEmail(email);
-      if (!foundUser) {
-        return ResponseEntity.ERROR_WITH(
-          `Invalid user!`,
-          HttpStatus.UNAUTHORIZED
-        );
-      }
-
-      const isCorrectPassword = await compare(rawPassword, foundUser.password);
-      if (isCorrectPassword) {
-        const { password, createdAt, ...userWithoutPassword } = foundUser;
-        return ResponseEntity.OK_WITH<AuthUserDto>(userWithoutPassword);
-      }
-
-      return ResponseEntity.ERROR_WITH(
-        `Invalid user!`,
-        HttpStatus.UNAUTHORIZED
-      );
-    } catch (e) {
-      console.log(e);
-      throw e;
-    }
-  }
-
   async regenerateAccessToken(userId: number, refreshToken: string) {
     const cachedRefreshToken = await this.getCachedRefreshToken(userId);
 
-    const isCorrect = this.compareRefreshToken(
-      refreshToken,
-      cachedRefreshToken
-    );
-    if (isCorrect) {
+    if (refreshToken === cachedRefreshToken) {
       const { password, createdAt, ...userWithoutPassword } =
         await this.userQueryRepository.findOneUserById(userId);
 
-      const accessToken = this.getAccessToken(userWithoutPassword);
-
+      const accessToken = this.generateAccessToken(userWithoutPassword);
       return ResponseEntity.OK_WITH({ userId, accessToken });
     }
 
@@ -138,12 +148,5 @@ export class AuthUserService {
   private async getCachedRefreshToken(userId: number): Promise<string> {
     const key = GenerateRefreshTokenKey(userId);
     return await this.cacheManager.get<string>(key);
-  }
-
-  private compareRefreshToken(
-    refreshToken: string,
-    cachedRefreshToken: string
-  ): boolean {
-    return refreshToken === cachedRefreshToken;
   }
 }

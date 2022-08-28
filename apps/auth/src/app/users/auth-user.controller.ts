@@ -27,27 +27,14 @@ export class AuthUserController {
 
   @Post('signin')
   async signIn(@Body() signInDto: SignInDto): Promise<ResponseEntity<unknown>> {
-    const { email, password } = signInDto;
-
-    const validateResult = await this.authService.validateUser(email, password);
-    const user = validateResult?.data;
-    console.log(`AUTH SIGNIN`, validateResult);
-    /** Validate Fail */
-    if (!user) {
-      return validateResult;
-    }
-
-    const tokens = await this.authService.signIn(user);
-    return ResponseEntity.OK_WITH(tokens);
+    return this.authService.signIn(signInDto);
   }
 
   @Post('refresh')
   async refresh(
-    @Body() dto: RefreshTokenDto
+    @Body() refreshTokenDto: RefreshTokenDto
   ): Promise<ResponseEntity<unknown>> {
-    const { userId, refreshToken } = dto;
-
-    console.log(`DTO: `, dto);
+    const { userId, refreshToken } = refreshTokenDto;
 
     return this.authService.regenerateAccessToken(userId, refreshToken);
   }
