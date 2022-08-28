@@ -1,9 +1,11 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { AuthUserService } from './auth-user.service';
 import {
+  AuthUserDto,
   RefreshTokenDto,
   ResponseEntity,
   SignInDto,
+  TokensDto,
 } from '@iot-framework/modules';
 import { CreateUserDto, User } from '@iot-framework/entities';
 
@@ -26,7 +28,9 @@ export class AuthUserController {
   }
 
   @Post('signin')
-  async signIn(@Body() signInDto: SignInDto): Promise<ResponseEntity<unknown>> {
+  async signIn(
+    @Body() signInDto: SignInDto
+  ): Promise<ResponseEntity<AuthUserDto | TokensDto>> {
     return this.authService.signIn(signInDto);
   }
 
