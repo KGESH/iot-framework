@@ -10,7 +10,7 @@ export class UserQueryRepository {
     return this.dataSource.getRepository(User).findOneBy({ email });
   }
 
-  async findOneUserById(userId: number) {
+  async findOneUserById(userId: number): Promise<User> {
     return this.dataSource.getRepository(User).findOneBy({ id: userId });
   }
 }
