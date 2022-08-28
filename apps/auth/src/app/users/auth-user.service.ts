@@ -104,7 +104,6 @@ export class AuthUserService {
     await this.cacheRefreshToken(userId, refreshToken);
 
     return {
-      user: authUserDto,
       accessToken,
       refreshToken,
     };
