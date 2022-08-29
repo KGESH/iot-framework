@@ -17,15 +17,8 @@ export const RolesGuard = (roles: UserRoles[]): Type<CanActivate> => {
     canActivate(
       context: ExecutionContext
     ): boolean | Promise<boolean> | Observable<boolean> {
-      console.log(`Call Roles Guard`);
       const request = context.switchToHttp().getRequest();
-
-      /** Todo: Fix eslint */
-      // eslint-disable-next-line no-unsafe-optional-chaining
-      const { role } = request.body?.user;
-      console.log(`Role: `, role);
-
-      return roles.includes(role);
+      return roles.includes(request.user.role);
     }
   }
 
