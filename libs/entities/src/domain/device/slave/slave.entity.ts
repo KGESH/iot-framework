@@ -1,6 +1,5 @@
 import {
   Column,
-  CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
@@ -65,8 +64,4 @@ export class Slave {
 
   @OneToMany((type) => Temperature, (temperature) => temperature.slave)
   temperatures: Temperature[];
-
-  @ApiProperty()
-  @CreateDateColumn({ type: 'timestamptz', name: 'create_at' })
-  createAt: Date;
 }
