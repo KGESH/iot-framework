@@ -1,12 +1,12 @@
 import { format } from 'date-fns';
 import {
   ESlaveConfigTopic,
-  ESlaveState,
+  ESlaveStateTopic,
   ESlaveTurnPowerTopic,
 } from '@iot-framework/utils';
 
 interface IRunningKey {
-  sensor: ESlaveState | string;
+  sensor: ESlaveStateTopic | string;
   masterId: number;
   slaveId: number;
 }
