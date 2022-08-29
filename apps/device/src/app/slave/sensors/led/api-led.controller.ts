@@ -17,4 +17,9 @@ export class ApiLedController {
   ): Promise<ResponseEntity<null>> {
     return this.apiLedService.setConfig(ledConfigDto);
   }
+
+  // @Post('power')
+  // async turnLed(@Body() dto: SlaveCacheDto) {
+  //   return this.apiLedService.turnPower(dto);
+  // }
 }

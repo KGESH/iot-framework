@@ -4,13 +4,11 @@ import { DeviceLedService } from './device-led.service';
 import { SlaveQueryRepository } from '@iot-framework/entities';
 import { LedRepository } from './led.repository';
 import { ResponseEntity } from '@iot-framework/modules';
-import {
-  EPowerState,
-  ESlaveStateTopic,
-  ESlaveTurnPowerTopic,
-} from '@iot-framework/utils';
+import { EPowerState, ESensor } from '@iot-framework/utils';
 import { ApiSlaveService } from '../../api-slave.service';
 import { LedConfigDto } from './dto/led-config.dto';
+import { UpdateResult } from 'typeorm';
+import { SlaveCacheDto } from '../../dto/slave-cache.dto';
 
 @Injectable()
 export class ApiLedService {
@@ -22,10 +20,50 @@ export class ApiLedService {
     private readonly ledRepository: LedRepository
   ) {}
 
-  async setConfig(dto: LedConfigDto): Promise<ResponseEntity<null>> {
-    await this.deviceLedService.sendConfigPacket(dto);
+  // async turnPower(dto: SlaveCacheDto) {
+  //   const { masterId, slaveId, powerState } = dto;
+  //   const slave = await this.slaveQueryRepository.findOneByMasterSlaveIds(
+  //     masterId,
+  //     slaveId
+  //   );
+  //
+  //   if (!slave) {
+  //     return ResponseEntity.ERROR_WITH(
+  //       'Slave not found!',
+  //       HttpStatus.BAD_REQUEST
+  //     );
+  //   }
+  //
+  //   await this.deviceLedService.turnPower(slave, powerState);
+  //   const updated = await this.ledRepository.updateLedPowerState(
+  //     slave,
+  //     powerState
+  //   );
+  //
+  //   if (this.updateFail(updated)) {
+  //     return ResponseEntity.ERROR_WITH(
+  //       'Led power state update not affected!',
+  //       HttpStatus.INTERNAL_SERVER_ERROR
+  //     );
+  //   }
+  //
+  //   await this.cachePowerState(slave, powerState);
+  //   await this.cacheRunningState(slave, powerState);
+  //
+  //   return ResponseEntity.OK();
+  //
+  //   return '';
+  // }
 
-    const updateSuccess = await this.updateConfig(dto);
+  private updateFail(updated: UpdateResult) {
+    return updated.affected === 0;
+  }
+
+  async setConfig(configDto: LedConfigDto): Promise<ResponseEntity<null>> {
+    const { masterId, slaveId, ledRuntime } = configDto;
+    await this.deviceLedService.sendConfigPacket(configDto);
+
+    const updateSuccess = await this.updateConfig(configDto);
     if (!updateSuccess) {
       return ResponseEntity.ERROR_WITH(
         'Led config update fail!',
@@ -33,13 +71,16 @@ export class ApiLedService {
       );
     }
 
-    const powerState = this.getPowerState(dto);
-    await this.apiSlaveService.cacheConfig(
-      dto,
-      ESlaveTurnPowerTopic.LED,
-      ESlaveStateTopic.LED,
+    const powerState = this.getPowerState(configDto);
+    const cacheDto = new SlaveCacheDto(
+      masterId,
+      slaveId,
+      ESensor.LED,
       powerState
     );
+
+    await this.apiSlaveService.cachePowerState(cacheDto);
+    await this.apiSlaveService.cacheRunningState(cacheDto, ledRuntime);
 
     return ResponseEntity.OK();
   }

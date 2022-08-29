@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ApiLedController } from './api-led-controller';
+import { ApiLedController } from './api-led.controller';
 import { ApiLedService } from './api-led.service';
 
 @Module({
