@@ -9,7 +9,7 @@ export class MqttService {
     private readonly broker: ClientProxy
   ) {}
 
-  async publish(topic: string, payload: unknown): Promise<void> {
-    this.broker.emit(topic, payload);
+  async publish(topic: string, payload: unknown) {
+    return this.broker.emit(topic, payload);
   }
 }
