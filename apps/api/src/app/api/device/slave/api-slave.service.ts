@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { CreateSlaveDto } from './dto/create-slave.dto';
-import { SlaveStateDto } from './dto/slave-state.dto';
 import { ApiMasterService } from '../master/api-master.service';
 import { DeviceClientService } from '@iot-framework/modules';
 

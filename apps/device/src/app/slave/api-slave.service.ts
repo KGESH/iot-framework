@@ -4,11 +4,12 @@ import { SlaveStateDto } from './dto/slave-state.dto';
 import { SensorStateDto } from './dto/sensor-state.dto';
 import {
   EPowerState,
-  ESlaveState,
+  ESlaveStateTopic,
   ESlaveTurnPowerTopic,
   SensorPowerKey,
   SensorStateKey,
 } from '@iot-framework/utils';
+import { SlaveConfigDto } from './dto/slave-config.dto';
 
 export class ApiSlaveService {
   constructor(@Inject(CACHE_MANAGER) private readonly cacheManager: Cache) {}
@@ -16,15 +17,15 @@ export class ApiSlaveService {
   async getSensorsState(slaveStateDto: SlaveStateDto): Promise<SensorStateDto> {
     const waterPumpRunningState = await this.getRunningState(
       slaveStateDto,
-      ESlaveState.WATER_PUMP
+      ESlaveStateTopic.WATER_PUMP
     );
     const ledRunningState = await this.getRunningState(
       slaveStateDto,
-      ESlaveState.LED
+      ESlaveStateTopic.LED
     );
     const fanRunningState = await this.getRunningState(
       slaveStateDto,
-      ESlaveState.FAN
+      ESlaveStateTopic.FAN
     );
     const waterPumpPowerState = await this.getPowerState(
       slaveStateDto,
@@ -51,8 +52,8 @@ export class ApiSlaveService {
 
   async getRunningState(
     { masterId, slaveId }: SlaveStateDto,
-    sensor: ESlaveState
-  ) {
+    sensor: ESlaveStateTopic
+  ): Promise<EPowerState> {
     const key = SensorStateKey({ sensor, masterId, slaveId });
     return await this.cacheManager.get<EPowerState>(key);
   }
@@ -60,8 +61,50 @@ export class ApiSlaveService {
   async getPowerState(
     { masterId, slaveId }: SlaveStateDto,
     sensor: ESlaveTurnPowerTopic
-  ) {
+  ): Promise<EPowerState> {
     const key = SensorPowerKey({ sensor, masterId, slaveId });
     return this.cacheManager.get<EPowerState>(key);
+  }
+
+  async cacheConfig(
+    dto: Partial<SlaveConfigDto>,
+    powerTopic: ESlaveTurnPowerTopic,
+    runningTopic: ESlaveStateTopic,
+    powerState: EPowerState
+  ) {
+    await this.cachePowerState(dto, powerTopic, powerState);
+    await this.cacheRunningState(dto, runningTopic, powerState);
+  }
+
+  async cachePowerState(
+    dto: Partial<SlaveConfigDto>,
+    powerTopic: ESlaveTurnPowerTopic,
+    powerState: EPowerState
+  ) {
+    const powerStateKey = SensorPowerKey({
+      sensor: powerTopic,
+      masterId: dto.masterId,
+      slaveId: dto.slaveId,
+    });
+
+    await this.cacheManager.set<string>(powerStateKey, powerState, {
+      ttl: 0,
+    });
+  }
+
+  async cacheRunningState(
+    dto: Partial<SlaveConfigDto>,
+    runningTopic: ESlaveStateTopic,
+    powerState: EPowerState
+  ) {
+    const runningStateKey = SensorStateKey({
+      sensor: runningTopic,
+      masterId: dto.masterId,
+      slaveId: dto.slaveId,
+    });
+
+    await this.cacheManager.set<string>(runningStateKey, powerState, {
+      ttl: dto.waterPumpRuntime * 60,
+    });
   }
 }
