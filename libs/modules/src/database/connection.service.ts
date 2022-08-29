@@ -18,6 +18,7 @@ export class ConnectionService implements TypeOrmOptionsFactory {
       entities: [],
       autoLoadEntities: true,
       synchronize: process.env.NODE_ENV !== 'production',
+      logging: process.env.NODE_ENV !== 'production',
     } as TypeOrmModuleOptions;
   }
 }
