@@ -4,7 +4,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDate, IsNumber } from 'class-validator';
+import { IsDate, IsNumber, IsOptional } from 'class-validator';
 
 export abstract class BaseTimeEntity {
   @PrimaryGeneratedColumn()
@@ -20,4 +20,10 @@ export abstract class BaseTimeEntity {
   @UpdateDateColumn({ type: 'timestamptz', name: 'updated_at' })
   @IsDate()
   updatedAt: Date;
+
+  @ApiProperty({ example: new Date(), description: 'Date timestamptz' })
+  @UpdateDateColumn({ type: 'timestamptz', name: 'deleted_at' })
+  @IsOptional()
+  @IsDate()
+  deletedAt?: Date;
 }

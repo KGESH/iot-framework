@@ -30,11 +30,14 @@ export class AuthService {
   async signIn(
     email: string,
     rawPassword: string
-  ): Promise<ResponseEntity<TokensDto>> {
-    return this.authClientService.post('signin', {
-      email,
-      password: rawPassword,
-    });
+  ): Promise<ResponseEntity<TokensDto | null>> {
+    return this.authClientService.post<ResponseEntity<TokensDto | null>>(
+      'signin',
+      {
+        email,
+        password: rawPassword,
+      }
+    );
   }
 
   async refresh(

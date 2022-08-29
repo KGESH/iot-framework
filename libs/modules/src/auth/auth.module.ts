@@ -4,7 +4,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { ISecretService } from '@iot-framework/core';
 import { AuthService } from './auth.service';
-import { MicroserviceClientsModule } from '../microservice-client/microservice-clients.module';
+import { MicroserviceClientsModule } from '../microservice-client';
 import { LocalStrategy } from './guards/local.strategy';
 import { JwtStrategy } from './guards/jwt.strategy';
 

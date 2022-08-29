@@ -22,7 +22,7 @@ export enum ESensor {
   WATER_PUMP = 'water',
 }
 
-export enum ESlaveState {
+export enum ESlaveStateTopic {
   ALL = 'state',
   THERMOMETER = 'temperature/state',
   WATER_PUMP = 'water/state',
