@@ -1,40 +1,69 @@
 import { DataSource } from 'typeorm';
 import { Injectable } from '@nestjs/common';
-import { Slave } from '@iot-framework/entities';
+import {
+  defaultLedConfig,
+  defaultThermometerConfig,
+  defaultWaterPumpConfig,
+  Led,
+  Master,
+  Slave,
+  Thermometer,
+  WaterPump,
+} from '@iot-framework/entities';
 
 @Injectable()
-export class SlaveQueryRepository {
+export class SlaveRepository {
   constructor(private readonly dataSource: DataSource) {}
 
-  getConfigs(masterId: number, slaveId: number) {
-    return this.dataSource
-      .getRepository(Slave)
-      .createQueryBuilder('slave')
-      .where(`slave.masterId = :masterId`, { masterId })
-      .andWhere(`slave.slaveId = :slaveId`, { slaveId })
-      .leftJoinAndSelect('slave.thermometerConfig', 't')
-      .leftJoinAndSelect('slave.ledConfig', 'led')
-      .leftJoinAndSelect('slave.waterConfig', 'water')
-      .select([
-        't.rangeBegin AS rangeBegin',
-        't.rangeEnd AS rangeEnd',
-        't.updateCycle AS updateCycle',
-        'led.ledCycle AS ledCycle',
-        'led.ledRuntime AS ledRuntime',
-        'water.waterPumpCycle AS waterPumpCycle',
-        'water.waterPumpRuntime AS waterPumpRuntime',
-      ])
-      .getRawOne();
+  createSlave(master: Master, slaveId): Promise<Slave> {
+    const { ledConfig, waterConfig, thermometerConfig } =
+      this.createSensorsConfig();
+
+    const slave = this.dataSource.getRepository(Slave).create({
+      master,
+      masterId: master.masterId,
+      slaveId,
+      ledConfig,
+      waterConfig,
+      thermometerConfig,
+    });
+
+    return this.dataSource.getRepository(Slave).save(slave);
+  }
+
+  private createSensorsConfig() {
+    const ledConfig = this.dataSource
+      .getRepository(Led)
+      .create({ ...defaultLedConfig });
+
+    const waterConfig = this.dataSource.getRepository(WaterPump).create({
+      ...defaultWaterPumpConfig,
+    });
+
+    const thermometerConfig = this.dataSource
+      .getRepository(Thermometer)
+      .create({
+        ...defaultThermometerConfig,
+      });
+
+    return { ledConfig, waterConfig, thermometerConfig };
   }
 
   async deleteSlave(masterId: number, slaveId: number) {
-    return this.dataSource
-      .getRepository(Slave)
-      .createQueryBuilder()
-      .delete()
-      .from(Slave)
-      .where(`masterId = :masterId`, { masterId })
-      .andWhere(`slaveId = :slaveId`, { slaveId })
-      .execute();
+    const queryRunner = await this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      await this.dataSource.getRepository(Slave).delete({ masterId, slaveId });
+      await queryRunner.commitTransaction();
+
+      return true;
+    } catch (e) {
+      await queryRunner.rollbackTransaction();
+      return false;
+    } finally {
+      await queryRunner.release();
+    }
   }
 }
