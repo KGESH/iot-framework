@@ -1,10 +1,4 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  OneToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { BaseTimeEntity } from '../../base-time.entity';
 import { Slave } from '../slave';
 
@@ -14,16 +8,13 @@ export class Led extends BaseTimeEntity {
   id: number;
 
   @Column({ type: 'integer' })
-  ledCycle: number;
+  cycle: number;
 
   @Column({ type: 'integer' })
-  ledRuntime: number;
+  runtime: number;
 
   @OneToOne((type) => Slave, (slave) => slave.ledConfig, {
     cascade: true,
   })
   slave: Slave;
-
-  @CreateDateColumn({ type: 'timestamptz', name: 'create_at' })
-  createAt: Date;
 }
