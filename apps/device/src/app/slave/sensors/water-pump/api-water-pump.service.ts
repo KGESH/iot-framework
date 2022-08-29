@@ -5,12 +5,9 @@ import { DeviceWaterPumpService } from './device-water-pump.service';
 import { SlaveQueryRepository } from '@iot-framework/entities';
 import { WaterPumpRepository } from './water-pump.repository';
 import { ResponseEntity } from '@iot-framework/modules';
-import {
-  EPowerState,
-  ESlaveStateTopic,
-  ESlaveTurnPowerTopic,
-} from '@iot-framework/utils';
+import { EPowerState, ESensor } from '@iot-framework/utils';
 import { ApiSlaveService } from '../../api-slave.service';
+import { SlaveCacheDto } from '../../dto/slave-cache.dto';
 
 @Injectable()
 export class ApiWaterPumpService {
@@ -22,10 +19,13 @@ export class ApiWaterPumpService {
     private readonly waterPumpRepository: WaterPumpRepository
   ) {}
 
-  async setConfig(dto: WaterPumpConfigDto): Promise<ResponseEntity<null>> {
-    const packet = await this.deviceWaterPumpService.sendConfigPacket(dto);
+  async setConfig(
+    configDto: WaterPumpConfigDto
+  ): Promise<ResponseEntity<null>> {
+    const { masterId, slaveId, waterPumpRuntime } = configDto;
+    await this.deviceWaterPumpService.sendConfigPacket(configDto);
 
-    const updateSuccess = await this.updateConfig(dto);
+    const updateSuccess = await this.updateConfig(configDto);
     if (!updateSuccess) {
       return ResponseEntity.ERROR_WITH(
         'Water pump config update fail!',
@@ -33,13 +33,16 @@ export class ApiWaterPumpService {
       );
     }
 
-    const powerState = this.getPowerState(dto);
-    await this.apiSlaveService.cacheConfig(
-      dto,
-      ESlaveTurnPowerTopic.WATER_PUMP,
-      ESlaveStateTopic.WATER_PUMP,
+    const powerState = this.getPowerState(configDto);
+    const powerDto = new SlaveCacheDto(
+      masterId,
+      slaveId,
+      ESensor.WATER_PUMP,
       powerState
     );
+
+    await this.apiSlaveService.cachePowerState(powerDto);
+    await this.apiSlaveService.cacheRunningState(powerDto, waterPumpRuntime);
 
     return ResponseEntity.OK();
   }
