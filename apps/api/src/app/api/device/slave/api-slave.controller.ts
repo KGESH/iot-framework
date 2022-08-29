@@ -4,7 +4,6 @@ import {
   Get,
   Delete,
   Headers,
-  NotFoundException,
   Post,
   Query,
   UseGuards,
@@ -16,12 +15,10 @@ import { SWAGGER_TAG } from '../../../../utils/swagger/enum';
 import { JwtAuthGuard, RolesGuard } from '@iot-framework/modules';
 import { UserRoles } from '@iot-framework/entities';
 import { CreateSlaveDto } from './dto/create-slave.dto';
-import { SlaveStateDto } from './dto/slave-state.dto';
-import { DeleteSlaveDto } from './dto/delete-slave.dto';
 
 @ApiTags(SWAGGER_TAG.SLAVE)
 @ApiBearerAuth()
-@Controller('api/device-service/slave')
+@Controller('device/slave')
 export class ApiSlaveController {
   constructor(
     private masterService: ApiMasterService,

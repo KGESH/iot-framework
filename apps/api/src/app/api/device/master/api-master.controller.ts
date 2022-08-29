@@ -9,7 +9,7 @@ import { SWAGGER_TAG } from '../../../../utils/swagger/enum';
 
 @ApiTags(SWAGGER_TAG.MASTER)
 @ApiBearerAuth()
-@Controller('api/device-service/master')
+@Controller('device/master')
 export class ApiMasterController {
   constructor(private readonly masterService: ApiMasterService) {}
 

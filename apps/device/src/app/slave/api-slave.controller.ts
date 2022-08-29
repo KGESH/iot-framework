@@ -16,7 +16,7 @@ import { ApiSlaveService } from './api-slave.service';
 import { CreateSlaveDto } from './dto/create-slave.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { SWAGGER_TAG } from '../../utils/swagger/enum';
-import { ISlaveConfigs } from '@iot-framework/entities';
+import { SlaveConfigsResponse } from '@iot-framework/entities';
 import { DeviceSlaveService } from './device-slave.service';
 import { ResponseEntity } from '@iot-framework/modules';
 
@@ -30,20 +30,17 @@ export class ApiSlaveController {
   ) {}
 
   @Post()
-  async createSlave(@Body() createSlaveDto: CreateSlaveDto) {
-    const createResult = await this.slaveService.createSlave(createSlaveDto);
-    if (!createResult) {
-      throw new NotFoundException('Slave Create Error');
-    }
-
-    return createResult;
+  async createSlave(
+    @Body() createSlaveDto: CreateSlaveDto
+  ): Promise<ResponseEntity<null>> {
+    return await this.slaveService.createSlave(createSlaveDto);
   }
 
   @Delete()
   async deleteSlave(
     @Query('masterId') masterId: number,
     @Query('slaveId') slaveId: number
-  ) {
+  ): Promise<ResponseEntity<null>> {
     return this.slaveService.deleteSlave(masterId, slaveId);
   }
 
@@ -51,11 +48,10 @@ export class ApiSlaveController {
   async fetchConfig(
     @Query('masterId') masterId: number,
     @Query('slaveId') slaveId: number
-  ): Promise<ResponseEntity<ISlaveConfigs>> {
+  ): Promise<ResponseEntity<SlaveConfigsResponse>> {
     return this.slaveService.getConfigs(masterId, slaveId);
   }
 
-  /** Todo: 센서들 상태 캐싱값 받아와서 돌려줌 */
   @Get('state')
   async getSlaveState(
     @Query('masterId') masterId: number,
