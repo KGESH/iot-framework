@@ -26,7 +26,4 @@ export class Thermometer extends BaseTimeEntity {
     cascade: true,
   })
   slave: Slave;
-
-  @CreateDateColumn({ type: 'timestamptz', name: 'create_at' })
-  createAt: Date;
 }
