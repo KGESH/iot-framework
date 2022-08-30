@@ -1,9 +1,6 @@
-export * from './database/database.module';
-export * from './database/test/test-database.module';
-export * from './database/test/types';
-
+export * from './database';
 export * from './microservice-client';
-export * from './redis/redis.module';
+export * from './redis';
 
 /** Common */
 export * from './response/response.entity';
