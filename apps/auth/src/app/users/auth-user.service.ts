@@ -3,15 +3,11 @@ import { compare } from 'bcrypt';
 import { Cache } from 'cache-manager';
 import { ISecretService } from '@iot-framework/core';
 import { GenerateRefreshTokenKey } from '@iot-framework/utils';
-import {
-  CreateUserDto,
-  User,
-  UserQueryRepository,
-  UserRepository,
-} from '@iot-framework/entities';
+import { CreateUserDto, User, UserQueryRepository, UserRepository } from '@iot-framework/entities';
 import { JwtService } from '@nestjs/jwt';
 import {
   AuthUserDto,
+  RedisTTL,
   ResponseEntity,
   SignInDto,
   TokensDto,
@@ -27,17 +23,12 @@ export class AuthUserService {
     private readonly userQueryRepository: UserQueryRepository
   ) {}
 
-  async signUp(
-    createUserDto: CreateUserDto
-  ): Promise<ResponseEntity<User | null>> {
+  async signUp(createUserDto: CreateUserDto): Promise<ResponseEntity<User | null>> {
     const { email } = createUserDto;
 
     const existUser = await this.userQueryRepository.findOneByEmail(email);
     if (existUser) {
-      return ResponseEntity.ERROR_WITH(
-        'User already exist!',
-        HttpStatus.CONFLICT
-      );
+      return ResponseEntity.ERROR_WITH('User already exist!', HttpStatus.CONFLICT);
     }
 
     /** Todo: Validate phone number service */
@@ -57,9 +48,7 @@ export class AuthUserService {
     return this.cacheManager.del(key);
   }
 
-  async signIn(
-    signInDto: SignInDto
-  ): Promise<ResponseEntity<AuthUserDto | TokensDto>> {
+  async signIn(signInDto: SignInDto): Promise<ResponseEntity<AuthUserDto | TokensDto>> {
     const { email, password } = signInDto;
 
     const validatedResult = await this.validateUser(email, password);
@@ -80,10 +69,7 @@ export class AuthUserService {
   ): Promise<ResponseEntity<AuthUserDto>> {
     const foundUser = await this.userQueryRepository.findOneByEmail(email);
     if (!foundUser) {
-      return ResponseEntity.ERROR_WITH(
-        `Invalid user!`,
-        HttpStatus.UNAUTHORIZED
-      );
+      return ResponseEntity.ERROR_WITH(`Invalid user!`, HttpStatus.UNAUTHORIZED);
     }
 
     const isCorrectPassword = await compare(rawPassword, foundUser.password);
@@ -125,7 +111,7 @@ export class AuthUserService {
 
   private async cacheRefreshToken(userId: number, refreshToken: string) {
     const key = GenerateRefreshTokenKey(userId);
-    await this.cacheManager.set<string>(key, refreshToken, { ttl: 1209600 }); // 🤔 2주
+    await this.cacheManager.set<string>(key, refreshToken, { ttl: RedisTTL.WEEK * 2 });
   }
 
   async regenerateAccessToken(userId: number, refreshToken: string) {
