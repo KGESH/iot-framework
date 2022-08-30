@@ -1,7 +1,8 @@
-import { HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-local';
 import { AuthService } from '../auth.service';
+import { TokensDto } from '@iot-framework/modules';
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
@@ -9,11 +10,10 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     super({ usernameField: `email`, passwordField: `password` });
   }
 
-  async validate(email: string, password: string) {
+  async validate(email: string, password: string): Promise<TokensDto> {
     const signInResult = await this.authService.signIn(email, password);
 
-    // 🤔
-    if (!signInResult.data) {
+    if (signInResult.statusCode !== HttpStatus.OK) {
       throw signInResult;
     }
 
