@@ -1,12 +1,7 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  OneToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { BaseTimeEntity } from '../../base-time.entity';
-import { Slave } from '../slave/slave.entity';
+import { Slave } from '../slave';
+import { EPowerState } from '@iot-framework/utils';
 
 @Entity('thermometers')
 export class Thermometer extends BaseTimeEntity {
@@ -21,6 +16,14 @@ export class Thermometer extends BaseTimeEntity {
 
   @Column({ type: 'integer' })
   updateCycle: number;
+
+  @Column({
+    type: 'enum',
+    enum: EPowerState,
+    name: 'power_state',
+    default: EPowerState.OFF,
+  })
+  powerState: EPowerState;
 
   @OneToOne((type) => Slave, (slave) => slave.thermometerConfig, {
     cascade: true,

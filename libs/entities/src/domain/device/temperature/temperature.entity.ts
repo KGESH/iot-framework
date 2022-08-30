@@ -7,7 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { BaseTimeEntity } from '../../base-time.entity';
-import { Slave } from '../slave/slave.entity';
+import { Slave } from '../slave';
 
 @Entity('temperatures')
 export class Temperature extends BaseTimeEntity {

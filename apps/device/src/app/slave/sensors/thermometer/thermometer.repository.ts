@@ -1,11 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { Slave, Thermometer } from '@iot-framework/entities';
 import { ThermometerConfigDto } from './dto/thermometer-config.dto';
+import { ResponseEntity } from '@iot-framework/modules';
 
 @Injectable()
 export class ThermometerRepository {
   constructor(private readonly dataSource: DataSource) {}
+
   async updateConfig(slave: Slave, configDto: ThermometerConfigDto) {
     const { rangeBegin, rangeEnd, updateCycle } = configDto;
 
@@ -14,7 +16,7 @@ export class ThermometerRepository {
     await queryRunner.startTransaction();
 
     try {
-      await this.dataSource
+      const updateResult = await this.dataSource
         .getRepository(Thermometer)
         .createQueryBuilder()
         .update(Thermometer)
@@ -23,10 +25,15 @@ export class ThermometerRepository {
         .execute();
       await queryRunner.commitTransaction();
 
-      return true;
-    } catch (e) {
+      return updateResult;
+    } catch (error) {
       await queryRunner.rollbackTransaction();
-      return false;
+
+      throw ResponseEntity.ERROR_WITH_DATA(
+        'Thermometer config update fail!',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        error
+      );
     } finally {
       await queryRunner.release();
     }
