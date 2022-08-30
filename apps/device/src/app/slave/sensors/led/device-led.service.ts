@@ -4,7 +4,7 @@ import {
   IotGatewayPacket,
   Command,
   IndexPriority,
-  START,
+  IoTProtocol,
   BasePacketHeader,
   PacketType,
 } from '@iot-framework/entities';
@@ -30,21 +30,17 @@ export class DeviceLedService {
     const runtimeLow = ledRuntime & 0x00ff;
 
     /** On / Off Event : 0xaa
-     *  No Event : 0xaf
+     *  No Event       : 0xaf
      * */
     const bodyDataField = [0xaa, cycleHigh, cycleLow, runtimeHigh, runtimeLow];
     const packetHeader: BasePacketHeader = {
-      start: START,
+      start: IoTProtocol.START,
       index: IndexPriority.COMMON,
       target_id: slaveId,
       command: Command.WRITE,
       data_length: bodyDataField.length,
     };
 
-    return IotGatewayPacket.makePacket(
-      PacketType.LED,
-      packetHeader,
-      bodyDataField
-    );
+    return IotGatewayPacket.makePacket(PacketType.LED, packetHeader, bodyDataField);
   }
 }
