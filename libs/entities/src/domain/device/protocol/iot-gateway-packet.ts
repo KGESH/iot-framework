@@ -2,8 +2,17 @@
  * Do not change property name !!
  * Packet will be deserialized in H/W
  * */
-import { MEMORY_ADDRESS_HIGH, MEMORY_ADDRESS_LOW } from './types/protocol.enum';
+import {
+  Command,
+  IndexPriority,
+  IoTProtocol,
+  MemoryAddressHigh,
+  MemoryAddressLow,
+  PowerByte,
+  TargetMemoryAddress,
+} from './types/protocol.enum';
 import { InternalServerErrorException } from '@nestjs/common';
+import { EPowerState } from '@iot-framework/utils';
 
 export enum PacketType {
   LED = 'LED',
@@ -13,10 +22,10 @@ export enum PacketType {
 }
 
 export interface BasePacketHeader {
-  start: number;
-  index: number;
-  target_id: number;
-  command: number;
+  start: IoTProtocol;
+  index: IndexPriority;
+  target_id: TargetMemoryAddress;
+  command: Command;
   data_length: number;
 }
 
@@ -29,6 +38,18 @@ export interface BasePacketBody {
 export interface BasePacket {
   header: BasePacketHeader;
   body?: BasePacketBody;
+}
+
+export type RawPacket = BasePacketHeader & BasePacketBody;
+
+export class IoTGatewayProtocol {
+  static getPowerByte(powerState: EPowerState): PowerByte {
+    return powerState === EPowerState.ON ? PowerByte.ON : PowerByte.OFF;
+  }
+
+  static getSensorPowerState(runtime: number) {
+    return runtime > 0 ? EPowerState.ON : EPowerState.OFF;
+  }
 }
 
 export class IotGatewayPacket implements BasePacket {
@@ -64,26 +85,32 @@ export class IotGatewayPacket implements BasePacket {
   private static makeTemperaturePacket(
     header: BasePacketHeader,
     dataField?: number[]
-  ) {
+  ): RawPacket {
     return new IotGatewayPacket(header, {
-      address_high: MEMORY_ADDRESS_HIGH.TEMPERATURE,
-      address_low: MEMORY_ADDRESS_LOW.TEMPERATURE,
+      address_high: MemoryAddressHigh.TEMPERATURE,
+      address_low: MemoryAddressLow.TEMPERATURE,
       data_list: dataField,
     }).serialize();
   }
 
-  private static makeLedPacket(header: BasePacketHeader, dataField?: number[]) {
+  private static makeLedPacket(
+    header: BasePacketHeader,
+    dataField?: number[]
+  ): RawPacket {
     return new IotGatewayPacket(header, {
-      address_high: MEMORY_ADDRESS_HIGH.LED,
-      address_low: MEMORY_ADDRESS_LOW.LED,
+      address_high: MemoryAddressHigh.LED,
+      address_low: MemoryAddressLow.LED,
       data_list: dataField,
     }).serialize();
   }
 
-  private static makeFanPacket(header: BasePacketHeader, dataField?: number[]) {
+  private static makeFanPacket(
+    header: BasePacketHeader,
+    dataField?: number[]
+  ): RawPacket {
     return new IotGatewayPacket(header, {
-      address_high: MEMORY_ADDRESS_HIGH.FAN,
-      address_low: MEMORY_ADDRESS_LOW.FAN,
+      address_high: MemoryAddressHigh.FAN,
+      address_low: MemoryAddressLow.FAN,
       data_list: dataField,
     }).serialize();
   }
@@ -91,15 +118,15 @@ export class IotGatewayPacket implements BasePacket {
   private static makeMotorPacket(
     header: BasePacketHeader,
     dataField?: number[]
-  ) {
+  ): RawPacket {
     return new IotGatewayPacket(header, {
-      address_high: MEMORY_ADDRESS_HIGH.MOTOR,
-      address_low: MEMORY_ADDRESS_LOW.MOTOR,
+      address_high: MemoryAddressHigh.MOTOR,
+      address_low: MemoryAddressLow.MOTOR,
       data_list: dataField,
     }).serialize();
   }
 
-  serialize() {
+  serialize(): RawPacket {
     return { ...this.header, ...this.body };
   }
 }
