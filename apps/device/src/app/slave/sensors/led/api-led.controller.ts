@@ -5,8 +5,6 @@ import { ApiLedService } from './api-led.service';
 import { LedConfigDto } from './dto/led-config.dto';
 import { SlaveStateDto } from '../../dto/slave-state.dto';
 import { ApiSlaveService } from '../../api-slave.service';
-import { ESensor } from '@iot-framework/utils';
-import { IoTGatewayProtocol } from '@iot-framework/entities';
 
 @Controller('led')
 export class ApiLedController {
@@ -16,17 +14,6 @@ export class ApiLedController {
     private readonly apiLedService: ApiLedService
   ) {}
 
-  @Post('config')
-  async setLedConfig(@Body() ledConfigDto: LedConfigDto): Promise<ResponseEntity<null>> {
-    try {
-      await this.apiLedService.setConfig(ledConfigDto);
-    } catch (e) {
-      return e;
-    }
-
-    return ResponseEntity.OK();
-  }
-
   @Post('power')
   async turnLed(@Body() dto: SlaveStateDto) {
     try {
@@ -35,10 +22,18 @@ export class ApiLedController {
       await this.apiSlaveService.cachePowerState(dto);
       await this.apiSlaveService.cacheRunningState(dto, 0);
     } catch (e) {
-      console.log(`Catch in controller: `, e);
       return e;
     }
 
     return ResponseEntity.OK();
+  }
+
+  @Post('config')
+  async setLedConfig(@Body() ledConfigDto: LedConfigDto): Promise<ResponseEntity<null>> {
+    try {
+      return await this.apiLedService.setConfig(ledConfigDto);
+    } catch (e) {
+      return e;
+    }
   }
 }

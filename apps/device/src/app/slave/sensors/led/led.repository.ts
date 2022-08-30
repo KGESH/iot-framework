@@ -9,11 +9,8 @@ import { ResponseEntity } from '@iot-framework/modules';
 export class LedRepository {
   constructor(private readonly dataSource: DataSource) {}
 
-  async updateLedPowerState(
-    slave: Slave,
-    powerState: EPowerState
-  ): Promise<UpdateResult> {
-    const queryRunner = await this.dataSource.createQueryRunner();
+  async updateLedPowerState(slave: Slave, powerState: EPowerState): Promise<UpdateResult> {
+    const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
 
@@ -22,7 +19,8 @@ export class LedRepository {
         .getRepository(Led)
         .createQueryBuilder()
         .update({ powerState })
-        .where(`id = :id`, { id: slave.ledFK })
+        .where(`slave_fk = :id`, { id: slave.id })
+        .returning(['runtime', 'powerState'])
         .execute();
       await queryRunner.commitTransaction();
 
@@ -39,13 +37,10 @@ export class LedRepository {
     }
   }
 
-  async updateConfig(
-    slave: Slave,
-    configDto: LedConfigDto
-  ): Promise<UpdateResult> {
+  async updateConfig(slave: Slave, configDto: LedConfigDto): Promise<UpdateResult> {
     const { ledCycle, ledRuntime } = configDto;
 
-    const queryRunner = await this.dataSource.createQueryRunner();
+    const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
 
@@ -55,7 +50,8 @@ export class LedRepository {
         .createQueryBuilder()
         .update(Led)
         .set({ cycle: ledCycle, runtime: ledRuntime })
-        .where('id = :id', { id: slave.ledFK })
+        // .where('id = :id', { id: slave.ledFK })
+        .where('slave_fk = :id', { id: slave.id })
         .execute();
       await queryRunner.commitTransaction();
 
@@ -63,7 +59,7 @@ export class LedRepository {
     } catch (error) {
       await queryRunner.rollbackTransaction();
       throw ResponseEntity.ERROR_WITH_DATA(
-        'Led power state update error!',
+        'Led config update error!',
         HttpStatus.INTERNAL_SERVER_ERROR,
         error
       );
