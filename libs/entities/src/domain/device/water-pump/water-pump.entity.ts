@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -19,8 +20,10 @@ export class WaterPump extends BaseTimeEntity {
   @Column({ type: 'integer' })
   runtime: number;
 
+  @JoinColumn({ name: 'slave_fk', referencedColumnName: 'id' })
   @OneToOne((type) => Slave, (slave) => slave.waterConfig, {
     cascade: true,
+    onDelete: 'CASCADE',
   })
   slave: Slave;
 }

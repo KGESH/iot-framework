@@ -1,4 +1,4 @@
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { BaseTimeEntity } from '../../base-time.entity';
 import { Slave } from '../slave';
 import { EPowerState } from '@iot-framework/utils';
@@ -25,8 +25,10 @@ export class Thermometer extends BaseTimeEntity {
   })
   powerState: EPowerState;
 
+  @JoinColumn({ name: 'slave_fk', referencedColumnName: 'id' })
   @OneToOne((type) => Slave, (slave) => slave.thermometerConfig, {
     cascade: true,
+    onDelete: 'CASCADE',
   })
   slave: Slave;
 }
