@@ -2,7 +2,7 @@ import { MqttService } from '../../../mqtt/mqtt.service';
 import { CACHE_MANAGER, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { ThermometerConfigDto } from './dto/thermometer-config.dto';
 import { SlaveQueryRepository } from '@iot-framework/entities';
-import { ResponseEntity } from '@iot-framework/modules';
+import { RedisTTL, ResponseEntity } from '@iot-framework/modules';
 import { ThermometerRepository } from './thermometer.repository';
 import { ESlaveConfigTopic, SensorConfigKey } from '@iot-framework/utils';
 import { Cache } from 'cache-manager';
@@ -16,34 +16,16 @@ export class DeviceThermometerService {
     private readonly thermometerRepository: ThermometerRepository
   ) {}
 
-  async setConfig(
-    configDto: ThermometerConfigDto
-  ): Promise<ResponseEntity<null>> {
+  async setConfig(configDto: ThermometerConfigDto): Promise<ResponseEntity<null>> {
     const { masterId, slaveId } = configDto;
 
-    const slave = await this.slaveQueryRepository.findOneByMasterSlaveIds(
-      masterId,
-      slaveId
-    );
+    const slave = await this.slaveQueryRepository.findOneByMasterSlaveIds(masterId, slaveId);
 
     if (!slave) {
-      return ResponseEntity.ERROR_WITH(
-        'Slave not found!',
-        HttpStatus.NOT_FOUND
-      );
+      throw ResponseEntity.ERROR_WITH('Slave not found!', HttpStatus.BAD_REQUEST);
     }
 
-    const updateSuccess = await this.thermometerRepository.updateConfig(
-      slave,
-      configDto
-    );
-
-    if (!updateSuccess) {
-      return ResponseEntity.ERROR_WITH(
-        'Thermometer config update fail!',
-        HttpStatus.INTERNAL_SERVER_ERROR
-      );
-    }
+    await this.thermometerRepository.updateConfig(slave, configDto);
 
     await this.cacheConfig(configDto);
     return ResponseEntity.OK();
@@ -61,7 +43,7 @@ export class DeviceThermometerService {
     const cachedResult = await this.cacheManager.set<number[]>(
       key,
       [configDto.rangeBegin, configDto.rangeEnd],
-      { ttl: 3600 } // 1h
+      { ttl: RedisTTL.HOUR }
     );
 
     console.log(`Cached: `, cachedResult);

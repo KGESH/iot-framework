@@ -5,6 +5,7 @@ import { SlaveConfigsResponse } from '@iot-framework/entities';
 import { SlaveQueryRepository } from '@iot-framework/entities';
 import { ResponseEntity } from '@iot-framework/modules';
 import { SlaveRepository } from './device-slave.repository';
+import { EPowerState } from '@iot-framework/utils';
 
 @Injectable()
 export class DeviceSlaveService {

@@ -10,23 +10,21 @@ import { ApiSlaveController } from './api-slave.controller';
 import { DeviceSlaveService } from './device-slave.service';
 import { ApiSlaveService } from './api-slave.service';
 import { DeviceMasterModule } from '../master/device-master.module';
-import { SlaveQueryRepository } from '@iot-framework/entities';
 import { SlaveRepository } from './device-slave.repository';
 import { DeviceThermometerModule } from './sensors/thermometer/device-thermometer.module';
 import { DeviceWaterPumpModule } from './sensors/water-pump/device-water-pump.module';
 import { DeviceLedModule } from './sensors/led/device-led.module';
+import { DeviceFanModule } from './sensors/fan/device-fan.module';
 
 /** Todo: Add Sensors */
 @Module({
   imports: [
-    DeviceMasterModule,
     SlaveModule,
-    LedModule,
-    WaterPumpModule,
-    TemperatureModule,
+    DeviceMasterModule,
     DeviceThermometerModule,
     DeviceWaterPumpModule,
     DeviceLedModule,
+    DeviceFanModule,
   ],
   controllers: [ApiSlaveController],
   providers: [
@@ -34,7 +32,6 @@ import { DeviceLedModule } from './sensors/led/device-led.module';
     ApiSlaveService,
     SlaveRepository,
     MasterQueryRepository,
-    SlaveQueryRepository,
   ],
 })
 export class DeviceSlaveModule {}

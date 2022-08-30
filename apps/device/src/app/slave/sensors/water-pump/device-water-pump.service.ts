@@ -6,15 +6,14 @@ import {
   Command,
   IndexPriority,
   IotGatewayPacket,
+  IoTProtocol,
   PacketType,
-  START,
 } from '@iot-framework/entities';
 
 @Injectable()
 export class DeviceWaterPumpService {
   constructor(private readonly mqttService: MqttService) {}
 
-  /** Todo: combine other sensors */
   sendConfigPacket(dto: WaterPumpConfigDto) {
     const { masterId } = dto;
     const topic = `master/${masterId}/water`;
@@ -36,7 +35,7 @@ export class DeviceWaterPumpService {
      * */
     const bodyDataField = [0xaa, cycleHigh, cycleLow, runtimeHigh, runtimeLow];
     const packetHeader: BasePacketHeader = {
-      start: START,
+      start: IoTProtocol.START,
       index: IndexPriority.COMMON,
       target_id: slaveId,
       command: Command.WRITE,
