@@ -9,4 +9,5 @@ export enum SWAGGER_TAG {
   NOTIFICATION = 'notification',
   USER = 'user',
   AUTH = 'auth',
+  SENSOR = 'sensor',
 }
