@@ -51,6 +51,6 @@ export const environment = {
 
   JWT_ACCESS_SECRET: 'my_dev_secret',
   JWT_REFRESH_SECRET: 'my_dev_refresh_secret',
-  JWT_ACCESS_EXPIRES_IN: '30m',
+  JWT_ACCESS_EXPIRES_IN: '300m',
   JWT_REFRESH_EXPIRES_IN: '14d',
 };
