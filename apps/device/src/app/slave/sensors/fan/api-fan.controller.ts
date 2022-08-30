@@ -1,6 +1,6 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { ApiFanService } from './api-fan.service';
-import { SlaveCacheDto } from '../../dto/slave-cache.dto';
+import { SlaveStateDto } from '../../dto/slave-state.dto';
 import { ApiSlaveService } from '../../api-slave.service';
 import { ResponseEntity } from '@iot-framework/modules';
 
@@ -12,7 +12,7 @@ export class ApiFanController {
   ) {}
 
   @Post('power')
-  async turnFan(@Body() dto: SlaveCacheDto) {
+  async turnFan(@Body() dto: SlaveStateDto) {
     try {
       await this.apiFanService.turnPower(dto);
 
