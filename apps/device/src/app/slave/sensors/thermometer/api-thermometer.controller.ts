@@ -15,6 +15,10 @@ export class ApiThermometerController {
   async setThermometerConfig(
     @Body() thermometerConfigDto: ThermometerConfigDto
   ): Promise<ResponseEntity<null>> {
-    return this.deviceThermometerService.setConfig(thermometerConfigDto);
+    try {
+      return await this.deviceThermometerService.setConfig(thermometerConfigDto);
+    } catch (e) {
+      return e;
+    }
   }
 }

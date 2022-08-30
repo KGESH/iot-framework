@@ -20,10 +20,12 @@ export class Thermometer extends BaseTimeEntity {
   @Column({
     type: 'enum',
     enum: EPowerState,
-    name: 'power_state',
     default: EPowerState.OFF,
   })
   powerState: EPowerState;
+
+  @Column({ name: 'slave_fk', type: 'integer' })
+  slaveFK: number;
 
   @JoinColumn({ name: 'slave_fk', referencedColumnName: 'id' })
   @OneToOne((type) => Slave, (slave) => slave.thermometerConfig, {

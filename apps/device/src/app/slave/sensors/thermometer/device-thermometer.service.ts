@@ -28,6 +28,7 @@ export class DeviceThermometerService {
     await this.thermometerRepository.updateConfig(slave, configDto);
 
     await this.cacheConfig(configDto);
+
     return ResponseEntity.OK();
   }
 

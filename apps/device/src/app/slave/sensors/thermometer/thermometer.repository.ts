@@ -11,7 +11,7 @@ export class ThermometerRepository {
   async updateConfig(slave: Slave, configDto: ThermometerConfigDto) {
     const { rangeBegin, rangeEnd, updateCycle } = configDto;
 
-    const queryRunner = await this.dataSource.createQueryRunner();
+    const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
 
@@ -21,7 +21,7 @@ export class ThermometerRepository {
         .createQueryBuilder()
         .update(Thermometer)
         .set({ rangeBegin, rangeEnd, updateCycle })
-        .where('id = :id', { id: slave.thermometerFK })
+        .where('slave_fk = :id', { id: slave.id })
         .execute();
       await queryRunner.commitTransaction();
 
