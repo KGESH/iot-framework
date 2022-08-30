@@ -3,9 +3,11 @@ import { ApiLedService } from './api-led.service';
 import { JwtAuthGuard, RolesGuard } from '@iot-framework/modules';
 import { UserRoles } from '@iot-framework/entities';
 import { LedConfigDto } from './dto/led-config.dto';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { SlavePowerDto } from '../../dto/slave-power.dto';
+import { SWAGGER_TAG } from '../../../../../../utils/swagger/enum';
 
+@ApiTags(SWAGGER_TAG.LED)
 @ApiBearerAuth()
 @Controller('device/led')
 export class ApiLedController {

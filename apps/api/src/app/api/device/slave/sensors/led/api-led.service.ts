@@ -12,6 +12,6 @@ export class ApiLedService {
   }
 
   async turnLed(dto: SlavePowerDto) {
-    return this.deviceClientService.post('led/power');
+    return this.deviceClientService.post('led/power', dto);
   }
 }
