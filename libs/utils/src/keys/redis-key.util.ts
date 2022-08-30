@@ -1,18 +1,19 @@
 import { format } from 'date-fns';
 import {
+  ESensor,
   ESlaveConfigTopic,
   ESlaveStateTopic,
   ESlaveTurnPowerTopic,
 } from '@iot-framework/utils';
 
 interface IRunningKey {
-  sensor: ESlaveStateTopic | string;
+  sensor: ESensor;
   masterId: number;
   slaveId: number;
 }
 
 interface IPowerKey {
-  sensor: ESlaveTurnPowerTopic;
+  sensor: ESensor;
   masterId: number;
   slaveId: number;
 }
@@ -24,13 +25,13 @@ interface IConfigKey {
 }
 
 export const SensorStateKey = ({ sensor, masterId, slaveId }: IRunningKey) =>
-  `${sensor}/${masterId}/${slaveId}`;
+  `state/${sensor}/${masterId}/${slaveId}`;
 
 export const SensorPowerKey = ({ sensor, masterId, slaveId }: IPowerKey) =>
-  `${sensor}/${masterId}/${slaveId}`;
+  `power/${sensor}/${masterId}/${slaveId}`;
 
 export const SensorConfigKey = ({ sensor, masterId, slaveId }: IConfigKey) =>
-  `${sensor}/${masterId}/${slaveId}`;
+  `config/${sensor}/${masterId}/${slaveId}`;
 
 /** Todo: Make Policy After ... */
 export const MasterPollingKey = (key: string) => key;
