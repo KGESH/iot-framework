@@ -1,7 +1,7 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { MasterQueryRepository } from '@iot-framework/entities';
 import { CreateMasterDto } from './dto/create-master.dto';
-import { ResponseEntity } from '@iot-framework/modules';
+import { notAffected, ResponseEntity } from '@iot-framework/modules';
 import { DeviceMasterRepository } from './device-master.repository';
 
 @Injectable()
@@ -11,44 +11,25 @@ export class DeviceMasterService {
     private readonly masterQueryRepository: MasterQueryRepository
   ) {}
 
-  async createMaster(
-    createMasterDto: CreateMasterDto
-  ): Promise<ResponseEntity<null>> {
+  async createMaster(createMasterDto: CreateMasterDto): Promise<ResponseEntity<null>> {
     const { masterId } = createMasterDto;
 
     const exist = await this.masterQueryRepository.findOneByMasterId(masterId);
     if (exist) {
-      /** Todo: handle exception */
-      console.log(`Master ID Exist!`);
-      return ResponseEntity.ERROR_WITH('Master exist!', HttpStatus.CONFLICT);
+      return ResponseEntity.ERROR_WITH('Master exist!', HttpStatus.BAD_REQUEST);
     }
 
-    const createSuccess = await this.masterRepository.createMaster(
-      createMasterDto
-    );
-
-    if (createSuccess) {
-      return ResponseEntity.OK();
-    }
-
-    return ResponseEntity.ERROR_WITH(
-      'Master create fail!',
-      HttpStatus.INTERNAL_SERVER_ERROR
-    );
+    await this.masterRepository.createMaster(createMasterDto);
+    return ResponseEntity.OK();
   }
 
   async deleteMaster(masterId: number) {
-    const deleteSuccess = await this.masterRepository.deleteByMasterId(
-      masterId
-    );
+    const deleteResult = await this.masterRepository.deleteByMasterId(masterId);
 
-    if (deleteSuccess) {
-      return ResponseEntity.OK();
+    if (notAffected(deleteResult)) {
+      return ResponseEntity.ERROR_WITH('Master delete not affected!', HttpStatus.BAD_REQUEST);
     }
 
-    return ResponseEntity.ERROR_WITH(
-      'Master delete fail!',
-      HttpStatus.INTERNAL_SERVER_ERROR
-    );
+    return ResponseEntity.OK();
   }
 }

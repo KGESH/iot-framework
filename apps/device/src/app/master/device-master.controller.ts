@@ -1,16 +1,11 @@
 import { CACHE_MANAGER, Controller, Inject } from '@nestjs/common';
-import {
-  Ctx,
-  EventPattern,
-  MqttContext,
-  Payload,
-  Transport,
-} from '@nestjs/microservices';
+import { Ctx, EventPattern, MqttContext, Payload, Transport } from '@nestjs/microservices';
 
 import { DevicePollingService } from './device-polling.service';
 import { Cache } from 'cache-manager';
 import { MasterPollingKey, POLLING } from '@iot-framework/utils';
 import { EPollingState } from './types/polling.enum';
+import { RedisTTL } from '@iot-framework/modules';
 
 @Controller()
 export class DeviceMasterController {
@@ -22,10 +17,7 @@ export class DeviceMasterController {
   /**
    * Todo: Validate Polling Status Is Number */
   @EventPattern(POLLING, Transport.MQTT)
-  async receivePollingResult(
-    @Ctx() context: MqttContext,
-    @Payload() pollingStatus: EPollingState
-  ) {
+  async receivePollingResult(@Ctx() context: MqttContext, @Payload() pollingStatus: EPollingState) {
     const key = MasterPollingKey(context.getTopic());
     // console.log(`이전 상태 값: `, await this.cacheManager.get<number>(key));
 
@@ -38,7 +30,7 @@ export class DeviceMasterController {
     }
 
     /** Cache Status To Redis */
-    await this.cacheManager.set<number>(key, pollingStatus, { ttl: 60 });
+    await this.cacheManager.set<number>(key, pollingStatus, { ttl: RedisTTL.MINUTE });
   }
 
   /**
@@ -53,10 +45,7 @@ export class DeviceMasterController {
   /**
    * Todo: Slave 펌웨어 수정 이후 제거 예정 */
   @EventPattern('master/+/assert/#', Transport.MQTT)
-  async receiveMockAssert(
-    @Payload() data: string,
-    @Ctx() context: MqttContext
-  ) {
+  async receiveMockAssert(@Payload() data: string, @Ctx() context: MqttContext) {
     console.log(`receive Assert packet: `, context.getPacket());
 
     console.log(`receive value `, data);

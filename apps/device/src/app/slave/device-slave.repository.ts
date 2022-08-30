@@ -1,5 +1,5 @@
 import { DataSource } from 'typeorm';
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import {
   defaultLedConfig,
   defaultThermometerConfig,
@@ -10,14 +10,14 @@ import {
   Thermometer,
   WaterPump,
 } from '@iot-framework/entities';
+import { ResponseEntity } from '@iot-framework/modules';
 
 @Injectable()
 export class SlaveRepository {
   constructor(private readonly dataSource: DataSource) {}
 
-  createSlave(master: Master, slaveId): Promise<Slave> {
-    const { ledConfig, waterConfig, thermometerConfig } =
-      this.createSensorsConfig();
+  async createSlave(master: Master, slaveId): Promise<Slave> {
+    const { ledConfig, waterConfig, thermometerConfig } = this.createSensorsConfig();
 
     const slave = this.dataSource.getRepository(Slave).create({
       master,
@@ -28,40 +28,60 @@ export class SlaveRepository {
       thermometerConfig,
     });
 
-    return this.dataSource.getRepository(Slave).save(slave);
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      const saveResult = await this.dataSource.getRepository(Slave).save(slave);
+      await queryRunner.commitTransaction();
+
+      return saveResult;
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      console.log(error);
+
+      throw ResponseEntity.ERROR_WITH_DATA(
+        `Slave Create Error!`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        error
+      );
+    } finally {
+      await queryRunner.release();
+    }
   }
 
   private createSensorsConfig() {
-    const ledConfig = this.dataSource
-      .getRepository(Led)
-      .create({ ...defaultLedConfig });
+    const ledConfig = this.dataSource.getRepository(Led).create({ ...defaultLedConfig });
 
     const waterConfig = this.dataSource.getRepository(WaterPump).create({
       ...defaultWaterPumpConfig,
     });
 
-    const thermometerConfig = this.dataSource
-      .getRepository(Thermometer)
-      .create({
-        ...defaultThermometerConfig,
-      });
+    const thermometerConfig = this.dataSource.getRepository(Thermometer).create({
+      ...defaultThermometerConfig,
+    });
 
     return { ledConfig, waterConfig, thermometerConfig };
   }
 
   async deleteSlave(masterId: number, slaveId: number) {
-    const queryRunner = await this.dataSource.createQueryRunner();
+    const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
 
     try {
-      await this.dataSource.getRepository(Slave).delete({ masterId, slaveId });
+      const deleteResult = await this.dataSource.getRepository(Slave).delete({ masterId, slaveId });
       await queryRunner.commitTransaction();
 
-      return true;
-    } catch (e) {
+      return deleteResult;
+    } catch (error) {
       await queryRunner.rollbackTransaction();
-      return false;
+
+      throw ResponseEntity.ERROR_WITH_DATA(
+        'Slave delete fail!',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        error
+      );
     } finally {
       await queryRunner.release();
     }

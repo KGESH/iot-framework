@@ -1,11 +1,12 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { MasterQueryRepository } from '@iot-framework/entities';
+import {
+  MasterQueryRepository,
+  SlaveConfigsResponse,
+  SlaveQueryRepository,
+} from '@iot-framework/entities';
 import { CreateSlaveDto } from './dto/create-slave.dto';
-import { SlaveConfigsResponse } from '@iot-framework/entities';
-import { SlaveQueryRepository } from '@iot-framework/entities';
-import { ResponseEntity } from '@iot-framework/modules';
+import { notAffected, ResponseEntity } from '@iot-framework/modules';
 import { SlaveRepository } from './device-slave.repository';
-import { EPowerState } from '@iot-framework/utils';
 
 @Injectable()
 export class DeviceSlaveService {
@@ -15,88 +16,41 @@ export class DeviceSlaveService {
     private readonly slaveQueryRepository: SlaveQueryRepository
   ) {}
 
-  async createSlave(
-    createSlaveDto: CreateSlaveDto
-  ): Promise<ResponseEntity<null>> {
+  async createSlave(createSlaveDto: CreateSlaveDto): Promise<void> {
     const { masterId, slaveId } = createSlaveDto;
 
     const master = await this.masterQueryRepository.findOneByMasterId(masterId);
     if (!master) {
-      return ResponseEntity.ERROR_WITH(
-        `Master Not Found!`,
-        HttpStatus.NOT_FOUND
-      );
+      throw ResponseEntity.ERROR_WITH(`Master Not Found!`, HttpStatus.BAD_REQUEST);
     }
 
-    const slaveExist = await this.slaveQueryRepository.findOneByMasterSlaveIds(
-      masterId,
-      slaveId
-    );
-
+    const slaveExist = await this.slaveQueryRepository.findOneByMasterSlaveIds(masterId, slaveId);
     if (slaveExist) {
-      return ResponseEntity.ERROR_WITH(
-        'Slave already exist!',
-        HttpStatus.CONFLICT
-      );
+      throw ResponseEntity.ERROR_WITH('Slave already exist!', HttpStatus.BAD_REQUEST);
     }
 
-    const saveSuccess = await this.slaveRepository.createSlave(master, slaveId);
-    if (saveSuccess) {
-      return ResponseEntity.OK();
-    }
-
-    return ResponseEntity.ERROR_WITH(
-      `Slave Create Error!`,
-      HttpStatus.INTERNAL_SERVER_ERROR
-    );
+    await this.slaveRepository.createSlave(master, slaveId);
   }
 
-  async deleteSlave(
-    masterId: number,
-    slaveId: number
-  ): Promise<ResponseEntity<null>> {
-    const isExist = await this.slaveQueryRepository.findOneByMasterSlaveIds(
-      masterId,
-      slaveId
-    );
+  async deleteSlave(masterId: number, slaveId: number): Promise<void> {
+    const isExist = await this.slaveQueryRepository.findOneByMasterSlaveIds(masterId, slaveId);
 
     if (!isExist) {
-      return ResponseEntity.ERROR_WITH(
-        'Slave is not exist!',
-        HttpStatus.NOT_FOUND
-      );
+      throw ResponseEntity.ERROR_WITH('Slave is not exist!', HttpStatus.BAD_REQUEST);
     }
 
-    const deleteSuccess = await this.slaveRepository.deleteSlave(
-      masterId,
-      slaveId
-    );
-    if (deleteSuccess) {
-      return ResponseEntity.OK();
+    const deleteResult = await this.slaveRepository.deleteSlave(masterId, slaveId);
+    if (notAffected(deleteResult)) {
+      throw ResponseEntity.ERROR_WITH('Slave delete not affected!', HttpStatus.BAD_REQUEST);
     }
-
-    return ResponseEntity.ERROR_WITH(
-      'Slave delete fail!',
-      HttpStatus.INTERNAL_SERVER_ERROR
-    );
   }
 
-  async getConfigs(
-    masterId: number,
-    slaveId: number
-  ): Promise<ResponseEntity<SlaveConfigsResponse>> {
-    const fetched = await this.slaveQueryRepository.getConfigs(
-      masterId,
-      slaveId
-    );
-
+  async getConfigs(masterId: number, slaveId: number): Promise<SlaveConfigsResponse> {
+    const fetched = await this.slaveQueryRepository.getConfigs(masterId, slaveId);
     if (!fetched) {
-      return ResponseEntity.ERROR_WITH(
-        'Slave configs not found!',
-        HttpStatus.NOT_FOUND
-      );
+      throw ResponseEntity.ERROR_WITH('Slave configs not found!', HttpStatus.BAD_REQUEST);
     }
 
-    return ResponseEntity.OK_WITH(fetched);
+    return fetched;
   }
 }
