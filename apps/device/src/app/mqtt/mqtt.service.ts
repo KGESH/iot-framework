@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { MQTT_TOKEN } from './enum';
+import { RawPacket } from '@iot-framework/entities';
 
 @Injectable()
 export class MqttService {
@@ -9,7 +10,7 @@ export class MqttService {
     private readonly broker: ClientProxy
   ) {}
 
-  async publish(topic: string, payload: unknown) {
+  publish(topic: string, payload: RawPacket) {
     return this.broker.emit(topic, payload);
   }
 }
