@@ -1,4 +1,13 @@
-export const START = 0x23;
+export enum IoTProtocol {
+  START = 0x23,
+}
+
+export enum IndexPriority {
+  EMERGENCY = 0x21,
+  HIGH = 0x22,
+  COMMON = 0x23,
+  LOW = 0x27,
+}
 
 export enum TargetMemoryAddress {
   ALL = 0xff,
@@ -12,23 +21,21 @@ export enum Command {
   EMERGENCY = 0xe0,
 }
 
-export enum IndexPriority {
-  EMERGENCY = 0x21,
-  HIGH = 0x22,
-  COMMON = 0x23,
-  LOW = 0x27,
-}
-
-export enum MEMORY_ADDRESS_HIGH {
+export enum MemoryAddressHigh {
   TEMPERATURE = 0x20,
   MOTOR = 0x0f,
   LED = 0x0f,
   FAN = 0x10,
 }
 
-export enum MEMORY_ADDRESS_LOW {
+export enum MemoryAddressLow {
   TEMPERATURE = 0x0c,
   MOTOR = 0xa1,
   LED = 0xdd,
   FAN = 0x19,
+}
+
+export enum PowerByte {
+  ON = 0xfb,
+  OFF = 0x0f,
 }
