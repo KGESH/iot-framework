@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
 import { ISecretService } from '@iot-framework/core';
+import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
 @Injectable()
 export class ConnectionService implements TypeOrmOptionsFactory {
@@ -17,6 +18,7 @@ export class ConnectionService implements TypeOrmOptionsFactory {
 
       entities: [],
       autoLoadEntities: true,
+      namingStrategy: new SnakeNamingStrategy(),
       synchronize: process.env.NODE_ENV !== 'production',
       logging: process.env.NODE_ENV !== 'production',
     } as TypeOrmModuleOptions;
