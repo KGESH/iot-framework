@@ -22,12 +22,12 @@ export class Slave extends BaseTimeEntity {
 
   @ApiProperty()
   @IsNumber()
-  @Column({ name: 'master_id' })
+  @Column()
   masterId: number;
 
   @ApiProperty()
   @IsNumber()
-  @Column({ name: 'slave_id' })
+  @Column()
   slaveId: number;
 
   @Column({ name: 'master_fk', type: 'integer' })
@@ -39,27 +39,16 @@ export class Slave extends BaseTimeEntity {
   })
   master: Master;
 
-  // @Column({ name: 'water_config_fk', type: 'integer' })
-  waterPumpFK: number;
-
   @OneToOne((type) => WaterPump, (waterPump) => waterPump.slave, {
     cascade: ['insert', 'update'],
   })
   waterConfig: WaterPump;
 
-  // @Column({ name: 'led_config_fk', type: 'integer' })
-  ledFK: number;
-
-  // @JoinColumn({ name: 'led_config_fk' })
   @OneToOne((type) => Led, (led) => led.slave, {
     cascade: ['insert', 'update'],
   })
   ledConfig: Led;
 
-  // @Column({ name: 'thermometer_config_fk', type: 'integer' })
-  thermometerFK: number;
-
-  // @JoinColumn({ name: 'thermometer_config_fk' })
   @OneToOne((type) => Thermometer, (thermometer) => thermometer.slave, {
     cascade: ['insert', 'update'],
   })
