@@ -7,6 +7,7 @@ import { ApiMasterModule } from '../master/api-master.module';
 import { ApiThermometerModule } from './sensors/thermometer/api-thermometer.module';
 import { ApiWaterPumpModule } from './sensors/water-pump/api-water-pump.module';
 import { ApiLedModule } from './sensors/led/api-led.module';
+import { ApiFanModule } from './sensors/fan/api-fan.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { ApiLedModule } from './sensors/led/api-led.module';
     ApiThermometerModule,
     ApiWaterPumpModule,
     ApiLedModule,
+    ApiFanModule,
   ],
   controllers: [ApiSlaveController],
   providers: [ApiMasterService, ApiSlaveService],

@@ -6,12 +6,10 @@ import {
   Get,
   Delete,
   Inject,
-  NotFoundException,
   Post,
   Query,
 } from '@nestjs/common';
 import { Cache } from 'cache-manager';
-import { SlaveStateDto } from './dto/slave-state.dto';
 import { ApiSlaveService } from './api-slave.service';
 import { CreateSlaveDto } from './dto/create-slave.dto';
 import { ApiTags } from '@nestjs/swagger';
@@ -58,9 +56,9 @@ export class ApiSlaveController {
     @Query('slaveId') slaveId: number
   ) {
     try {
-      const slaveStateDto = new SlaveStateDto(masterId, slaveId);
       const sensorsState = await this.apiSlaveService.getSensorsState(
-        slaveStateDto
+        masterId,
+        slaveId
       );
 
       return ResponseEntity.OK_WITH(sensorsState);
