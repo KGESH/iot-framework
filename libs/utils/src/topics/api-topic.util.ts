@@ -20,6 +20,8 @@ export enum EPowerState {
 export enum ESensor {
   LED = 'led',
   WATER_PUMP = 'water',
+  FAN = 'fan',
+  THERMOMETER = 'thermometer',
 }
 
 export enum ESlaveStateTopic {

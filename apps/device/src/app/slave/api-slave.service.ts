@@ -7,27 +7,27 @@ import { RedisTTL } from '@iot-framework/modules';
 export class ApiSlaveService {
   constructor(@Inject(CACHE_MANAGER) private readonly cacheManager: Cache) {}
 
+  /** Todo: extract to cache service & fetch DB */
   async getSensorsState(masterId: number, slaveId: number) {
     const waterDto = new SlaveStateDto(masterId, slaveId, ESensor.WATER_PUMP);
+    const waterPumpPowerState = await this.getPowerState(waterDto);
     const waterPumpRunningState = await this.getRunningState(waterDto);
 
     const ledDto = new SlaveStateDto(masterId, slaveId, ESensor.LED);
+    const ledPowerState = await this.getPowerState(ledDto);
     const ledRunningState = await this.getRunningState(ledDto);
 
     const fanDto = new SlaveStateDto(masterId, slaveId, ESensor.FAN);
+    const fanPowerState = await this.getPowerState(fanDto);
     const fanRunningState = await this.getRunningState(fanDto);
 
-    const waterPumpPowerState = await this.getPowerState(waterDto);
-    const ledPowerState = await this.getPowerState(ledDto);
-    const fanPowerState = await this.getPowerState(fanDto);
-
     return {
-      waterPumpRunningState,
       waterPumpPowerState,
-      ledRunningState,
+      waterPumpRunningState,
       ledPowerState,
-      fanRunningState,
+      ledRunningState,
       fanPowerState,
+      fanRunningState,
     };
   }
 
@@ -39,7 +39,7 @@ export class ApiSlaveService {
     return this.cacheManager.get<EPowerState>(dto.getPowerKey());
   }
 
-  async cachePowerState(dto: SlaveStateDto) {
+  async cachePowerState(dto: SlaveStateDto): Promise<void> {
     const { powerState } = dto;
 
     await this.cacheManager.set<string>(dto.getPowerKey(), powerState, {
@@ -49,7 +49,7 @@ export class ApiSlaveService {
 
   /**
    * Cache sensor running state to redis. default TTL is 'Unlimited' */
-  async cacheRunningState(dto: SlaveStateDto, ttlMinute: number) {
+  async cacheRunningState(dto: SlaveStateDto, ttlMinute: number): Promise<void> {
     const { powerState } = dto;
 
     await this.cacheManager.set<string>(dto.getStateKey(), powerState, {

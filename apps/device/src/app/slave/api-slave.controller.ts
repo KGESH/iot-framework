@@ -28,10 +28,13 @@ export class ApiSlaveController {
   ) {}
 
   @Post()
-  async createSlave(
-    @Body() createSlaveDto: CreateSlaveDto
-  ): Promise<ResponseEntity<null>> {
-    return await this.slaveService.createSlave(createSlaveDto);
+  async createSlave(@Body() createSlaveDto: CreateSlaveDto): Promise<ResponseEntity<null>> {
+    try {
+      await this.slaveService.createSlave(createSlaveDto);
+      return ResponseEntity.OK();
+    } catch (e) {
+      return e;
+    }
   }
 
   @Delete()
@@ -39,7 +42,12 @@ export class ApiSlaveController {
     @Query('masterId') masterId: number,
     @Query('slaveId') slaveId: number
   ): Promise<ResponseEntity<null>> {
-    return this.slaveService.deleteSlave(masterId, slaveId);
+    try {
+      await this.slaveService.deleteSlave(masterId, slaveId);
+      return ResponseEntity.OK();
+    } catch (e) {
+      return e;
+    }
   }
 
   @Get('config')
@@ -47,23 +55,20 @@ export class ApiSlaveController {
     @Query('masterId') masterId: number,
     @Query('slaveId') slaveId: number
   ): Promise<ResponseEntity<SlaveConfigsResponse>> {
-    return this.slaveService.getConfigs(masterId, slaveId);
+    try {
+      const fetched = await this.slaveService.getConfigs(masterId, slaveId);
+      return ResponseEntity.OK_WITH(fetched);
+    } catch (e) {
+      return e;
+    }
   }
 
   @Get('state')
-  async getSlaveState(
-    @Query('masterId') masterId: number,
-    @Query('slaveId') slaveId: number
-  ) {
+  async getSlaveState(@Query('masterId') masterId: number, @Query('slaveId') slaveId: number) {
     try {
-      const sensorsState = await this.apiSlaveService.getSensorsState(
-        masterId,
-        slaveId
-      );
-
+      const sensorsState = await this.apiSlaveService.getSensorsState(masterId, slaveId);
       return ResponseEntity.OK_WITH(sensorsState);
     } catch (e) {
-      /** Todo: Logging */
       return ResponseEntity.ERROR_WITH_DATA(
         'Get slave state error!',
         HttpStatus.INTERNAL_SERVER_ERROR,
