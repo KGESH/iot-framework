@@ -1,5 +1,6 @@
-import { IsIn, IsNumber, IsString } from 'class-validator';
+import { IsEnum, IsIn, IsNumber } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { EPowerState, ESensor } from '@iot-framework/utils';
 
 export class SlavePowerDto {
   @ApiProperty()
@@ -10,10 +11,14 @@ export class SlavePowerDto {
   @IsNumber()
   readonly slaveId: number;
 
-  @ApiProperty()
-  @IsString()
+  @ApiProperty({ enum: EPowerState })
+  @IsEnum(EPowerState)
   @IsIn(['on', 'off'], {
     message: `'powerState' is not 'on' or 'off'`,
   })
-  readonly powerState: string;
+  readonly powerState?: EPowerState;
+
+  @ApiProperty({ enum: ESensor })
+  @IsEnum(ESensor)
+  readonly sensor: ESensor;
 }
