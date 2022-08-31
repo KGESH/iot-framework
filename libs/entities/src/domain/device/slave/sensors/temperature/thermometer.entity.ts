@@ -1,18 +1,21 @@
 import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { Slave } from '../slave';
-import { BaseTimeEntity } from '../../base-time.entity';
+import { BaseTimeEntity } from '../../../../base-time.entity';
+import { Slave } from '../../index';
 import { EPowerState } from '@iot-framework/utils';
 
-@Entity('water_pumps')
-export class WaterPump extends BaseTimeEntity {
+@Entity('thermometers')
+export class Thermometer extends BaseTimeEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column({ type: 'integer' })
-  cycle: number;
+  rangeBegin: number;
 
   @Column({ type: 'integer' })
-  runtime: number;
+  rangeEnd: number;
+
+  @Column({ type: 'integer' })
+  updateCycle: number;
 
   @Column({
     type: 'enum',
@@ -25,7 +28,7 @@ export class WaterPump extends BaseTimeEntity {
   slaveFK: number;
 
   @JoinColumn({ name: 'slave_fk', referencedColumnName: 'id' })
-  @OneToOne((type) => Slave, (slave) => slave.waterConfig, {
+  @OneToOne((type) => Slave, (slave) => slave.thermometerConfig, {
     cascade: true,
     onDelete: 'CASCADE',
   })
