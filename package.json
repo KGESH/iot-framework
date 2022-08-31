@@ -3,13 +3,17 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
+    "prestart": "npm run start:db:local && npm run start:redis:local",
     "start": "nx run-many --target=serve --all",
     "start:api": "nx serve api",
     "start:device": "nx serve device",
     "start:auth": "nx serve auth",
     "build": "nx run-many --target=build --all --parallel --configuration=production",
     "deploy": "nx deploy",
-    "test": "nx test"
+    "test": "nx test",
+    "start:db:local": "./scripts/start-db-local.sh",
+    "start:redis:local": "./scripts/start-redis-local.sh"
+
   },
   "private": true,
   "dependencies": {
