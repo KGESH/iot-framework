@@ -26,6 +26,7 @@ npm install
 ```
 
 ## Start local
+run docker engine. before npm start  
 
 ```
 npm start
