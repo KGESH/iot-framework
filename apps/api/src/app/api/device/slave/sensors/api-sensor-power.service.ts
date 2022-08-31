@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { DeviceClientService } from '@iot-framework/modules';
-import { SensorPowerDto } from './dto/sensor-power.dto';
+import { SensorPowerDto } from '@iot-framework/entities';
 
 @Injectable()
 export class ApiSensorPowerService {

@@ -2,7 +2,7 @@ import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { SWAGGER_TAG } from '../../../../../utils/swagger/enum';
 import { ApiSensorPowerService } from './api-sensor-power.service';
-import { SensorPowerDto } from './dto/sensor-power.dto';
+import { SensorPowerDto } from '@iot-framework/entities';
 import { JwtAuthGuard, RolesGuard } from '@iot-framework/modules';
 import { UserRoles } from '@iot-framework/entities';
 
@@ -10,7 +10,7 @@ import { UserRoles } from '@iot-framework/entities';
 @ApiBearerAuth()
 @UseGuards(RolesGuard([UserRoles.ADMIN, UserRoles.USER]))
 @UseGuards(JwtAuthGuard)
-@Controller('device/sensor')
+@Controller('device/sensors')
 export class ApiSensorPowerController {
   constructor(private readonly apiSensorPowerService: ApiSensorPowerService) {}
 
