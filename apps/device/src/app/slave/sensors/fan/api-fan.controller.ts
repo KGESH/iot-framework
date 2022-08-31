@@ -18,10 +18,9 @@ export class ApiFanController {
 
       await this.apiSlaveService.cachePowerState(dto);
       await this.apiSlaveService.cacheRunningState(dto, 0);
+      return ResponseEntity.OK();
     } catch (e) {
       return e;
     }
-
-    return ResponseEntity.OK();
   }
 }
