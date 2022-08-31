@@ -1,5 +1,3 @@
-
-
 # IotFramework
 
 Nestjs Monorepo with NX
@@ -12,3 +10,23 @@ Nestjs Monorepo with NX
 - Redis
 - Nestjs
 - NX
+
+## Setup
+
+```
+git clone https://github.com/KGESH/iot-framework.git
+```
+
+```
+cd iot-framework
+```
+
+```
+npm install
+```
+
+## Start local
+
+```
+npm start
+```
