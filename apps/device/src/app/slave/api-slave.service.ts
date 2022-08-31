@@ -48,7 +48,7 @@ export class ApiSlaveService {
   }
 
   /**
-   * Cache sensor running state to redis. default TTL is 'Unlimited' */
+   * Cache sensors running state to redis. default TTL is 'Unlimited' */
   async cacheRunningState(dto: SlaveStateDto, ttlMinute: number): Promise<void> {
     const { powerState } = dto;
 
