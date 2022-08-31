@@ -1,7 +1,7 @@
 import { IsNumber, Max, Min } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class SlaveConfigDto {
+export class SensorsConfigDto {
   @ApiProperty()
   @IsNumber()
   masterId: number;
