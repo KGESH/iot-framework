@@ -1,11 +1,5 @@
 import { Module } from '@nestjs/common';
-import {
-  LedModule,
-  MasterQueryRepository,
-  SlaveModule,
-  TemperatureModule,
-  WaterPumpModule,
-} from '@iot-framework/entities';
+import { MasterQueryRepository, SlaveModule } from '@iot-framework/entities';
 import { ApiSlaveController } from './api-slave.controller';
 import { DeviceSlaveService } from './device-slave.service';
 import { ApiSlaveService } from './api-slave.service';
@@ -27,11 +21,6 @@ import { DeviceFanModule } from './sensors/fan/device-fan.module';
     DeviceFanModule,
   ],
   controllers: [ApiSlaveController],
-  providers: [
-    DeviceSlaveService,
-    ApiSlaveService,
-    SlaveRepository,
-    MasterQueryRepository,
-  ],
+  providers: [DeviceSlaveService, ApiSlaveService, SlaveRepository, MasterQueryRepository],
 })
 export class DeviceSlaveModule {}

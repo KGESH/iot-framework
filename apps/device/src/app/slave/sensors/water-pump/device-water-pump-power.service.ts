@@ -16,7 +16,6 @@ import { EPowerState } from '@iot-framework/utils';
 import { Observable } from 'rxjs';
 import { WaterPumpRepository } from './water-pump.repository';
 import { DeviceWaterPumpService } from './device-water-pump.service';
-import { SlaveStateDto } from '../../dto/slave-state.dto';
 
 @Injectable()
 export class DeviceWaterPumpPowerService {
