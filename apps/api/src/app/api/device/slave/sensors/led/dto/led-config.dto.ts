@@ -1,7 +1,7 @@
 import { PickType } from '@nestjs/swagger';
-import { SlaveConfigDto } from '../../../dto/slave-config.dto';
+import { SensorsConfigDto } from '@iot-framework/entities';
 
-export class LedConfigDto extends PickType(SlaveConfigDto, [
+export class LedConfigDto extends PickType(SensorsConfigDto, [
   'masterId',
   'slaveId',
   'ledCycle',

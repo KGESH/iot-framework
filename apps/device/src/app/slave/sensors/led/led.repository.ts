@@ -3,13 +3,26 @@ import { DataSource, UpdateResult } from 'typeorm';
 import { Led, Slave } from '@iot-framework/entities';
 import { LedConfigDto } from './dto/led-config.dto';
 import { EPowerState } from '@iot-framework/utils';
-import { ResponseEntity } from '@iot-framework/modules';
+import { notAffected, ResponseEntity } from '@iot-framework/modules';
 
 @Injectable()
 export class LedRepository {
   constructor(private readonly dataSource: DataSource) {}
 
-  async updateLedPowerState(slave: Slave, powerState: EPowerState): Promise<UpdateResult> {
+  async updateLedPowerState(slave: Slave, powerState: EPowerState): Promise<Led> {
+    const updateResult = await this.updatePowerState(slave, powerState);
+
+    if (notAffected(updateResult)) {
+      throw ResponseEntity.ERROR_WITH(
+        'Led power state update not affected!',
+        HttpStatus.BAD_REQUEST
+      );
+    }
+
+    return updateResult.raw[0];
+  }
+
+  private async updatePowerState(slave: Slave, powerState: EPowerState): Promise<UpdateResult> {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -20,7 +33,7 @@ export class LedRepository {
         .createQueryBuilder()
         .update({ powerState })
         .where(`slave_fk = :id`, { id: slave.id })
-        .returning(['runtime', 'powerState'])
+        .returning('*')
         .execute();
       await queryRunner.commitTransaction();
 
@@ -37,7 +50,17 @@ export class LedRepository {
     }
   }
 
-  async updateConfig(slave: Slave, configDto: LedConfigDto): Promise<UpdateResult> {
+  async updateLedConfig(slave: Slave, configDto: LedConfigDto): Promise<void> {
+    const updateResult = await this.updateConfig(slave, configDto);
+    if (notAffected(updateResult)) {
+      throw ResponseEntity.ERROR_WITH(
+        'Led config update not not affected!',
+        HttpStatus.BAD_REQUEST
+      );
+    }
+  }
+
+  private async updateConfig(slave: Slave, configDto: LedConfigDto): Promise<UpdateResult> {
     const { ledCycle, ledRuntime } = configDto;
 
     const queryRunner = this.dataSource.createQueryRunner();
@@ -50,7 +73,6 @@ export class LedRepository {
         .createQueryBuilder()
         .update(Led)
         .set({ cycle: ledCycle, runtime: ledRuntime })
-        // .where('id = :id', { id: slave.ledFK })
         .where('slave_fk = :id', { id: slave.id })
         .execute();
       await queryRunner.commitTransaction();

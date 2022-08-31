@@ -1,6 +1,6 @@
 import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { BaseTimeEntity } from '../../base-time.entity';
-import { Slave } from '../slave';
+import { BaseTimeEntity } from '../../../../base-time.entity';
+import { Slave } from '../../index';
 import { EPowerState } from '@iot-framework/utils';
 
 @Entity('leds')
