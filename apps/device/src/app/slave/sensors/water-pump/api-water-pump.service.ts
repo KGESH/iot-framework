@@ -23,43 +23,24 @@ export class ApiWaterPumpService {
 
   async turnPower(dto: SlaveStateDto) {
     const { masterId, slaveId, powerState } = dto;
-    const slave = await this.slaveQueryRepository.findOneByMasterSlaveIds(masterId, slaveId);
 
+    const slave = await this.slaveQueryRepository.findOneByMasterSlaveIds(masterId, slaveId);
     if (!slave) {
       throw ResponseEntity.ERROR_WITH('Slave not found!', HttpStatus.BAD_REQUEST);
     }
 
     await this.deviceWaterPumpPowerService.turnPower(slave, dto.powerState);
-    const updateResult = await this.waterPumpRepository.updateWaterPumpPowerState(
-      slave,
-      powerState
-    );
+    const { runtime } = await this.waterPumpRepository.updateWaterPumpPowerState(slave, powerState);
 
-    if (notAffected(updateResult)) {
-      throw ResponseEntity.ERROR_WITH(
-        'Water pump power state update not affected!',
-        HttpStatus.INTERNAL_SERVER_ERROR
-      );
-    }
-    console.log(`Pump update Result: `, updateResult);
-    console.log(`Pump update Raw: `, updateResult.raw);
-
-    // await this.apiSlaveService.cachePowerState(dto);
-    /** Todo: Cache */
-    // await this.apiSlaveService.cacheRunningState(dto, 0);
+    await this.apiSlaveService.cachePowerState(dto);
+    await this.apiSlaveService.cacheRunningState(dto, runtime);
   }
 
   async setConfig(configDto: WaterPumpConfigDto): Promise<void> {
     const { masterId, slaveId, waterPumpRuntime } = configDto;
-    await this.deviceWaterPumpService.sendConfigPacket(configDto);
 
-    const updateResult = await this.updateConfig(configDto);
-    if (notAffected(updateResult)) {
-      throw ResponseEntity.ERROR_WITH(
-        'Water pump config update not affected!',
-        HttpStatus.BAD_REQUEST
-      );
-    }
+    await this.deviceWaterPumpService.sendConfigPacket(configDto);
+    await this.updateConfig(configDto);
 
     const powerState = IoTGatewayProtocol.getSensorPowerState(configDto.waterPumpRuntime);
     const powerDto = new SlaveStateDto(masterId, slaveId, ESensor.WATER_PUMP, powerState);
@@ -76,6 +57,6 @@ export class ApiWaterPumpService {
       throw ResponseEntity.ERROR_WITH('Slave not found!', HttpStatus.BAD_REQUEST);
     }
 
-    return await this.waterPumpRepository.updateConfig(slave, dto);
+    return this.waterPumpRepository.updateWaterPumpConfig(slave, dto);
   }
 }
