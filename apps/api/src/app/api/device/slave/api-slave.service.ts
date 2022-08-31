@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { CreateSlaveDto } from './dto/create-slave.dto';
 import { ApiMasterService } from '../master/api-master.service';
-import { DeviceClientService } from '@iot-framework/modules';
+import { DeviceClientService, ResponseEntity } from '@iot-framework/modules';
+import { Slave, SlaveConfigsResponse } from '@iot-framework/entities';
 
 @Injectable()
 export class ApiSlaveService {
@@ -10,8 +11,8 @@ export class ApiSlaveService {
     private readonly deviceClientService: DeviceClientService
   ) {}
 
-  async createSlave(createSlaveDto: CreateSlaveDto) {
-    return this.deviceClientService.post('slave', { ...createSlaveDto });
+  async createSlave(createSlaveDto: CreateSlaveDto): Promise<ResponseEntity<Slave>> {
+    return this.deviceClientService.post<ResponseEntity<Slave>>('slave', { ...createSlaveDto });
   }
 
   async deleteSlave(masterId: number, slaveId: number) {
@@ -20,8 +21,11 @@ export class ApiSlaveService {
     });
   }
 
-  async getSlaveConfigs(masterId: number, slaveId: number) {
-    return this.deviceClientService.get('slave/config', {
+  async getSlaveConfigs(
+    masterId: number,
+    slaveId: number
+  ): Promise<ResponseEntity<SlaveConfigsResponse>> {
+    return this.deviceClientService.get<ResponseEntity<SlaveConfigsResponse>>('slave/config', {
       params: { masterId, slaveId },
     });
   }

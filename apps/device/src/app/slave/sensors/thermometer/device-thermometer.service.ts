@@ -16,7 +16,7 @@ export class DeviceThermometerService {
     private readonly thermometerRepository: ThermometerRepository
   ) {}
 
-  async setConfig(configDto: ThermometerConfigDto): Promise<ResponseEntity<null>> {
+  async setConfig(configDto: ThermometerConfigDto) {
     const { masterId, slaveId } = configDto;
 
     const slave = await this.slaveQueryRepository.findOneByMasterSlaveIds(masterId, slaveId);
@@ -28,8 +28,6 @@ export class DeviceThermometerService {
     await this.thermometerRepository.updateConfig(slave, configDto);
 
     await this.cacheConfig(configDto);
-
-    return ResponseEntity.OK();
   }
 
   private async cacheConfig(configDto: ThermometerConfigDto) {
