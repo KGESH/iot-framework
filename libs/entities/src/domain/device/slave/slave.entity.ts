@@ -10,9 +10,9 @@ import {
 import { IsNumber } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Master } from '../master';
-import { WaterPump } from '../water-pump';
-import { Led } from '../led';
-import { Thermometer, Temperature } from '../temperature';
+import { WaterPump } from './sensors/water-pump';
+import { Led } from './sensors/led';
+import { Thermometer, Temperature } from './sensors/temperature';
 import { BaseTimeEntity } from '../../base-time.entity';
 
 @Entity('slaves')
