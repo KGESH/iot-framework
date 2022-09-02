@@ -1,11 +1,4 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { BaseTimeEntity } from '../../../../base-time.entity';
 import { Slave } from '../../index';
 
@@ -18,12 +11,9 @@ export class Temperature extends BaseTimeEntity {
   temperature: number;
 
   @Column({ name: 'slave_fk' })
-  slave_fk: number;
+  slaveFK: number;
 
   @JoinColumn({ name: 'slave_fk' })
   @ManyToOne((type) => Slave, (slave) => slave.temperatures)
   slave: Slave;
-
-  @CreateDateColumn({ type: 'timestamptz', name: 'create_at' })
-  createAt: Date;
 }
