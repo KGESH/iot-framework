@@ -1,4 +1,4 @@
-import { MqttService } from '../../../mqtt/mqtt.service';
+import { MqttService } from '../../../../mqtt/mqtt.service';
 import { CACHE_MANAGER, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { ThermometerConfigDto } from './dto/thermometer-config.dto';
 import { SlaveQueryRepository } from '@iot-framework/entities';
@@ -10,7 +10,7 @@ import { Cache } from 'cache-manager';
 @Injectable()
 export class DeviceThermometerService {
   constructor(
-    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
     private readonly mqttBroker: MqttService,
     private readonly slaveQueryRepository: SlaveQueryRepository,
     private readonly thermometerRepository: ThermometerRepository
@@ -19,11 +19,7 @@ export class DeviceThermometerService {
   async setConfig(configDto: ThermometerConfigDto) {
     const { masterId, slaveId } = configDto;
 
-    const slave = await this.slaveQueryRepository.findOneByMasterSlaveIds(masterId, slaveId);
-
-    if (!slave) {
-      throw ResponseEntity.ERROR_WITH('Slave not found!', HttpStatus.BAD_REQUEST);
-    }
+    const slave = await this.slaveQueryRepository.findOneOrFail(masterId, slaveId);
 
     await this.thermometerRepository.updateConfig(slave, configDto);
 
