@@ -19,10 +19,7 @@ export class DeviceSlaveService {
   async createSlave(createSlaveDto: CreateSlaveDto): Promise<void> {
     const { masterId, slaveId } = createSlaveDto;
 
-    const master = await this.masterQueryRepository.findOneByMasterId(masterId);
-    if (!master) {
-      throw ResponseEntity.ERROR_WITH(`Master Not Found!`, HttpStatus.BAD_REQUEST);
-    }
+    const master = await this.masterQueryRepository.findOneByMasterIdOrFail(masterId);
 
     const slaveExist = await this.slaveQueryRepository.findOneByMasterSlaveIds(masterId, slaveId);
     if (slaveExist) {
@@ -33,11 +30,7 @@ export class DeviceSlaveService {
   }
 
   async deleteSlave(masterId: number, slaveId: number): Promise<void> {
-    const isExist = await this.slaveQueryRepository.findOneByMasterSlaveIds(masterId, slaveId);
-
-    if (!isExist) {
-      throw ResponseEntity.ERROR_WITH('Slave is not exist!', HttpStatus.BAD_REQUEST);
-    }
+    await this.slaveQueryRepository.findOneOrFail(masterId, slaveId);
 
     const deleteResult = await this.slaveRepository.deleteSlave(masterId, slaveId);
     if (notAffected(deleteResult)) {
