@@ -1,11 +1,7 @@
 import { IsEnum, IsIn, IsNumber } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  EPowerState,
-  ESensor,
-  SensorPowerKey,
-  SensorStateKey,
-} from '@iot-framework/utils';
+import { EPowerState, SensorPowerKey, SensorRunningStateKey } from '@iot-framework/utils';
+import { Sensor } from '@iot-framework/entities';
 
 export class SlaveStateDto {
   @ApiProperty()
@@ -24,15 +20,10 @@ export class SlaveStateDto {
   readonly powerState?: EPowerState;
 
   @ApiProperty()
-  @IsEnum(ESensor)
-  readonly sensor: ESensor;
+  @IsEnum(Sensor)
+  readonly sensor: Sensor;
 
-  constructor(
-    masterId: number,
-    slaveId: number,
-    sensor: ESensor,
-    powerState?: EPowerState
-  ) {
+  constructor(masterId: number, slaveId: number, sensor: Sensor, powerState?: EPowerState) {
     this.masterId = masterId;
     this.slaveId = slaveId;
     this.sensor = sensor;
@@ -47,8 +38,8 @@ export class SlaveStateDto {
     });
   }
 
-  getStateKey(): string {
-    return SensorStateKey({
+  getRunningStateKey(): string {
+    return SensorRunningStateKey({
       sensor: this.sensor,
       masterId: this.masterId,
       slaveId: this.slaveId,

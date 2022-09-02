@@ -1,19 +1,15 @@
 import { format } from 'date-fns';
-import {
-  ESensor,
-  ESlaveConfigTopic,
-  ESlaveStateTopic,
-  ESlaveTurnPowerTopic,
-} from '@iot-framework/utils';
+import { ESlaveConfigTopic, ESlaveStateTopic, ESlaveTurnPowerTopic } from '@iot-framework/utils';
+import { Sensor } from '@iot-framework/entities';
 
 interface IRunningKey {
-  sensor: ESensor;
+  sensor: Sensor;
   masterId: number;
   slaveId: number;
 }
 
 interface IPowerKey {
-  sensor: ESensor;
+  sensor: Sensor;
   masterId: number;
   slaveId: number;
 }
@@ -24,7 +20,7 @@ interface IConfigKey {
   slaveId: number;
 }
 
-export const SensorStateKey = ({ sensor, masterId, slaveId }: IRunningKey) =>
+export const SensorRunningStateKey = ({ sensor, masterId, slaveId }: IRunningKey) =>
   `state/${sensor}/${masterId}/${slaveId}`;
 
 export const SensorPowerKey = ({ sensor, masterId, slaveId }: IPowerKey) =>
@@ -37,11 +33,8 @@ export const SensorConfigKey = ({ sensor, masterId, slaveId }: IConfigKey) =>
 export const MasterPollingKey = (key: string) => key;
 
 /** key 문자열에서 week가 맞는지 검토 필요 week 인지 day 인지 */
-export const GenerateDayAverageKey = (
-  masterId: number,
-  slaveId: number,
-  date: Date
-) => `temperature/week/${masterId}/${slaveId}/${format(date, `yyyy/MM/dd`)}`;
+export const GenerateDayAverageKey = (masterId: number, slaveId: number, date: Date) =>
+  `temperature/week/${masterId}/${slaveId}/${format(date, `yyyy/MM/dd`)}`;
 
 export const GenerateAverageKeys = (
   masterId: number,
@@ -55,16 +48,11 @@ export const GenerateAverageKeys = (
     `temperature/week/${masterId}/${slaveId}/${date}`;
   const keys: string[] = [];
 
-  for (
-    let date = beginDate;
-    date < endDate;
-    date = addFunction(date, timeAmount)
-  ) {
+  for (let date = beginDate; date < endDate; date = addFunction(date, timeAmount)) {
     keys.push(generateKey(masterId, slaveId, format(date, `yyyy/MM/dd`)));
   }
 
   return keys;
 };
 
-export const GenerateRefreshTokenKey = (userId: number) =>
-  `refresh-token/${userId}`;
+export const GenerateRefreshTokenKey = (userId: number) => `refresh-token/${userId}`;

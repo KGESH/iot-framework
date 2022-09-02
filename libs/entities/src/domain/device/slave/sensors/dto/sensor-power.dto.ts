@@ -1,6 +1,7 @@
 import { IsEnum, IsIn, IsNumber } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { EPowerState, ESensor } from '@iot-framework/utils';
+import { EPowerState } from '@iot-framework/utils';
+import { Sensor } from '../types/sensor.enum';
 
 export class SensorPowerDto {
   @ApiProperty()
@@ -18,7 +19,7 @@ export class SensorPowerDto {
   })
   readonly powerState: EPowerState;
 
-  @ApiProperty({ enum: ESensor })
-  @IsEnum(ESensor)
-  readonly sensor: ESensor;
+  @ApiProperty({ enum: Sensor })
+  @IsEnum(Sensor)
+  readonly sensor: Sensor;
 }
