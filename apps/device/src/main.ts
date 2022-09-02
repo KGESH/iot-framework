@@ -3,10 +3,18 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app/app.module';
 import { ISecretService } from '@iot-framework/core';
 import { buildSwagger } from './utils/swagger/builder';
+import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const secretService = app.get(ISecretService);
+
+  app.connectMicroservice<MicroserviceOptions>({
+    transport: Transport.MQTT,
+    options: {
+      url: secretService.MQTT_BROKER_URL,
+    },
+  });
 
   const globalPrefix = 'device';
   app.setGlobalPrefix(globalPrefix);
@@ -23,6 +31,7 @@ async function bootstrap() {
   );
 
   buildSwagger(app);
+  await app.startAllMicroservices();
   await app.listen(port);
 
   Logger.log(
