@@ -17,13 +17,6 @@ export enum EPowerState {
   OFF = 'off',
 }
 
-export enum ESensor {
-  LED = 'led',
-  WATER_PUMP = 'water',
-  FAN = 'fan',
-  THERMOMETER = 'thermometer',
-}
-
 export enum ESlaveStateTopic {
   ALL = 'state',
   THERMOMETER = 'temperature/state',
