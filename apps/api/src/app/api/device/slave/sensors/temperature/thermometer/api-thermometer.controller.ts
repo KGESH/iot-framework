@@ -2,7 +2,7 @@ import { UserRoles } from '@iot-framework/entities';
 import { JwtAuthGuard, RolesGuard } from '@iot-framework/modules';
 import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { SWAGGER_TAG } from '../../../../../../utils/swagger/enum';
+import { SWAGGER_TAG } from '../../../../../../../utils/swagger/enum';
 import { ApiThermometerService } from './api-thermometer.service';
 import { ThermometerConfigDto } from './dto/thermometer-config.dto';
 
@@ -15,11 +15,7 @@ export class ApiThermometerController {
   @Post('config')
   @UseGuards(RolesGuard([UserRoles.ADMIN, UserRoles.USER]))
   @UseGuards(JwtAuthGuard)
-  async setThermometerConfig(
-    @Body() thermometerConfigDto: ThermometerConfigDto
-  ) {
-    return this.apiThermometerService.setThermometerConfig(
-      thermometerConfigDto
-    );
+  async setThermometerConfig(@Body() thermometerConfigDto: ThermometerConfigDto) {
+    return this.apiThermometerService.setThermometerConfig(thermometerConfigDto);
   }
 }
