@@ -1,11 +1,5 @@
 import { Body, Controller, Get, Delete, Headers, Post, Query, UseGuards } from '@nestjs/common';
-import {
-  ApiBearerAuth,
-  ApiCreatedResponse,
-  ApiOkResponse,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { ApiMasterService } from '../master/api-master.service';
 import { ApiSlaveService } from './api-slave.service';
 import { SWAGGER_TAG } from '../../../../utils/swagger/enum';
