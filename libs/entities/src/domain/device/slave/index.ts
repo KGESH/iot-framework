@@ -3,6 +3,7 @@ export * from './slave.entity';
 export * from './slave-query.repository';
 export * from './slave-config';
 
+export * from './sensors/types/sensor.enum';
 export * from './sensors/led';
 export * from './sensors/water-pump';
 export * from './sensors/temperature';
