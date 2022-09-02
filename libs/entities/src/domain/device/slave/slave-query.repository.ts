@@ -11,11 +11,25 @@ export class SlaveQueryRepository {
     return this.dataSource.getRepository(Slave).findOneBy({ masterFK });
   }
 
-  async findOneByMasterSlaveIds(masterId: number, slaveId: number): Promise<Slave | null> {
+  /** If slave is not exist. then return null. */
+  async findOneByMasterSlaveIds(masterId: number, slaveId: number): Promise<Slave> {
     return this.dataSource.getRepository(Slave).findOneBy({
       master: { masterId },
       slaveId,
     });
+  }
+
+  /** If slave is not exist. then throw error response. */
+  async findOneOrFail(masterId: number, slaveId: number): Promise<Slave> {
+    const slave = await this.dataSource.getRepository(Slave).findOneBy({
+      master: { masterId },
+      slaveId,
+    });
+    if (!slave) {
+      throw ResponseEntity.ERROR_WITH('Slave not found!', HttpStatus.BAD_REQUEST);
+    }
+
+    return slave;
   }
 
   /**
