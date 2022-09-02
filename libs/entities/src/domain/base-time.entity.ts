@@ -1,5 +1,6 @@
 import {
   CreateDateColumn,
+  DeleteDateColumn,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -22,7 +23,7 @@ export abstract class BaseTimeEntity {
   updatedAt: Date;
 
   @ApiProperty({ example: new Date(), description: 'Date timestamptz' })
-  @UpdateDateColumn({ type: 'timestamptz', name: 'deleted_at' })
+  @DeleteDateColumn({ type: 'timestamptz', name: 'deleted_at' })
   @IsOptional()
   @IsDate()
   deletedAt?: Date;
