@@ -16,8 +16,8 @@ export class ApiTemperatureController {
 
   @Get('now')
   async getCurrentTemperature(
-    @Query('masterId') masterId: number,
-    @Query('slaveId') slaveId: number
+    @Query('master_id') masterId: number,
+    @Query('slave_id') slaveId: number
   ): Promise<ResponseEntity<number>> {
     return this.apiTemperatureService.getCachedTemperature(masterId, slaveId);
   }
