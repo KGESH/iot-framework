@@ -2,20 +2,20 @@ version: '3.8'
 
 services:
   api:
-    image: api
+    image: baram987/api-gateway
     ports:
       - "7777:7777"
     links:
       - device
 
   device:
-    image: device
+    image: baram987/device-ms
     container_name: device
     ports:
       - "8000:8000"
 
   user:
-    image: user
+    image: baram987/auth-ms
     container_name: auth
     ports:
       - "9000:9000"
