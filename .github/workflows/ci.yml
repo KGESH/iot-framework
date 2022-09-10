@@ -85,13 +85,11 @@ jobs:
 #
 
 
-  aws_auth:
+
+
+  docker-build-api:
     needs: build
     runs-on: ubuntu-latest
-    outputs:
-      registry: "**.dkr.ecr.ap-northeast-2.amazonaws.com"
-      test: hello
-
     steps:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -104,26 +102,10 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Echo URL
-        id: echo-url
-        run: echo "URL - ${{ steps.login-ecr.outputs.registry }}"
-
-      - name: Export ECR Registry
-        id: export-registry
-        run: echo "::set-output name=registry::'${{ steps.login-ecr.outputs.registry }}'"
-
-
-  docker-build-api:
-    needs: aws_auth
-    runs-on: ubuntu-latest
-    steps:
-      - name: echo ecr url
-        run: echo "ecr URL - ${{ needs.aws_auth.outputs.registry }}"
-
       - name: Docker API Gateway Build, tag, and push image to Amazon ECR
         id: build-api-image
         env:
-          ECR_REGISTRY: ${{ needs.aws_auth.outputs.registry }}
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: ${{ env.ECR_REPOSITORY_API_GATEWAY }}
           IMAGE_TAG: latest
         run: |
@@ -137,16 +119,24 @@ jobs:
 
 
   docker-build-device:
-    needs: aws_auth
+    needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: echo ecr url
-        run: echo "TEST URL - ${{ needs.aws_auth.outputs.test }}"
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
 
       - name: Docker Device MS Build, tag, and push image to Amazon ECR
         id: build-device-image
         env:
-          ECR_REGISTRY: ${{ needs.aws_auth.outputs.registry }}
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: ${{ env.ECR_REPOSITORY_DEVICE_MS }}
           IMAGE_TAG: latest
         run: |
@@ -160,16 +150,24 @@ jobs:
 
 
   docker-build-auth:
-    needs: aws_auth
+    needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: echo ecr url
-        run: echo "TEST URL - ${{ needs.aws_auth.outputs.test }}"
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
 
       - name: Docker Auth MS Build, tag, and push image to Amazon ECR
         id: build-auth-image
         env:
-          ECR_REGISTRY: ${{ needs.aws_auth.outputs.registry }}
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: ${{ env.ECR_REPOSITORY_AUTH_MS }}
           IMAGE_TAG: latest
         run: |
