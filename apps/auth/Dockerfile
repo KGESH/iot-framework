@@ -9,7 +9,6 @@ COPY ../../dist/apps/auth .
 
 RUN apk --no-cache add --virtual .builds-deps build-base python3
 
-
 RUN npm install --production
 
 RUN npm install reflect-metadata tslib rxjs pg
