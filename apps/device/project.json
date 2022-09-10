@@ -7,7 +7,7 @@
       "executor": "@nrwl/workspace:run-commands",
       "options": {
         "commands": [
-          "nx build device --parallel --configuration=production",
+          "nx affected:build --project=device --parallel --configuration=production",
           "docker build --platform=linux/amd64 -f apps/device/Dockerfile . -t 930514904954.dkr.ecr.ap-northeast-2.amazonaws.com/device-microservice:latest",
           "docker push 930514904954.dkr.ecr.ap-northeast-2.amazonaws.com/device-microservice:latest"
         ],
