@@ -116,6 +116,9 @@ jobs:
     needs: aws_auth
     runs-on: ubuntu-latest
     steps:
+      - name: echo ecr url
+        run: echo "ECR URL - ${{ needs.aws_auth.outputs.registry }}"
+
       - name: Docker API Gateway Build, tag, and push image to Amazon ECR
         id: build-api-image
         env:
@@ -136,6 +139,9 @@ jobs:
     needs: aws_auth
     runs-on: ubuntu-latest
     steps:
+      - name: echo ecr url
+        run: echo "ECR URL - ${{ needs.aws_auth }}"
+
       - name: Docker Device MS Build, tag, and push image to Amazon ECR
         id: build-device-image
         env:
@@ -156,6 +162,9 @@ jobs:
     needs: aws_auth
     runs-on: ubuntu-latest
     steps:
+      - name: echo ecr url
+        run: echo "ECR URL - ${{ needs.aws_auth.outputs }}"
+
       - name: Docker Auth MS Build, tag, and push image to Amazon ECR
         id: build-auth-image
         env:
