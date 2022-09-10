@@ -5,7 +5,7 @@ MAINTAINER seonghyeon.jee@gmail.com
 
 WORKDIR /app
 #COPY package*.json ./
-COPY ../../dist/apps/api .
+COPY dist/apps/api .
 
 #RUN npm install
 
