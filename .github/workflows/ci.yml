@@ -108,7 +108,7 @@ jobs:
       - name: Docker API Gateway Build, tag, and push image to Amazon ECR
         id: build-api-image
         env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REGISTRY: ${{ aws-auth.steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: ${{ env.ECR_REPOSITORY_API_GATEWAY }}
           IMAGE_TAG: latest
         run: |
@@ -127,7 +127,7 @@ jobs:
       - name: Docker Device MS Build, tag, and push image to Amazon ECR
         id: build-device-image
         env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REGISTRY: ${{ aws-auth.steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: ${{ env.ECR_REPOSITORY_DEVICE_MS }}
           IMAGE_TAG: latest
         run: |
@@ -146,7 +146,7 @@ jobs:
       - name: Docker Auth MS Build, tag, and push image to Amazon ECR
         id: build-auth-image
         env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REGISTRY: ${{ aws-auth.steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: ${{ env.ECR_REPOSITORY_AUTH_MS }}
           IMAGE_TAG: latest
         run: |
