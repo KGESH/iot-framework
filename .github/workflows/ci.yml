@@ -89,7 +89,8 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     outputs:
-      registry: ${{ steps.export-registry.outputs.registry }}
+      registry:
+        value: ${{ steps.export-registry.outputs.registry }}
       test: hello
 
     steps:
@@ -118,7 +119,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: echo ecr url
-        run: echo "TEST URL - ${{ needs.aws_auth.outputs.test }}"
+        run: echo "ecr URL - ${{ needs.aws_auth.outputs.registry }}"
 
       - name: Docker API Gateway Build, tag, and push image to Amazon ECR
         id: build-api-image
