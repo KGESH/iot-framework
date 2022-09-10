@@ -14,8 +14,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Install dependencies
-        run: npm ci
+      - name: build
+        uses: mansagroup/nrwl-nx-action@v2
+        with:
+          targets: build
+          affected: 'true'
 
-      - name: Build
-        run: npm run deploy
