@@ -7,10 +7,11 @@
       "executor": "@nrwl/workspace:run-commands",
       "options": {
         "commands": [
-          "nx run-many --target=build --project=user --parallel --configuration=production",
-          "docker build -f ./apps/auth/Dockerfile . -t user"
+          "nx build auth --parallel --configuration=production",
+          "docker build --platform=linux/amd64 -f apps/auth/Dockerfile . -t baram987/auth-ms",
+          "docker push baram987/auth-ms"
         ],
-        "parallel": true
+        "parallel": false
       }
     },
     "build": {
@@ -31,8 +32,8 @@
           "inspect": false,
           "fileReplacements": [
             {
-              "replace": "libs/core/src/config/environments/environment.ts",
-              "with": "libs/core/src/config/environments/environment.prod.ts"
+              "replace": "libs/core/src/secrets/environments/environment.ts",
+              "with": "libs/core/src/secrets/environments/environment.prod.ts"
             }
           ]
         }
