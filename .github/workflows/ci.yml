@@ -88,6 +88,10 @@ jobs:
   aws_auth:
     needs: build
     runs-on: ubuntu-latest
+    outputs:
+      registry: ${{ steps.export-registry.outputs.registry }}
+      test: hello
+
     steps:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -108,16 +112,13 @@ jobs:
         id: export-registry
         run: echo "::set-output name=registry::${{ steps.login-ecr.outputs.registry }}"
 
-    outputs:
-      registry: ${{ steps.export-registry.outputs.registry }}
-
 
   docker-build-api:
     needs: aws_auth
     runs-on: ubuntu-latest
     steps:
       - name: echo ecr url
-        run: echo "ECR URL - ${{ needs.aws_auth.outputs.registry }}"
+        run: echo "TEST URL - ${{ needs.aws_auth.outputs.test }}"
 
       - name: Docker API Gateway Build, tag, and push image to Amazon ECR
         id: build-api-image
@@ -140,7 +141,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: echo ecr url
-        run: echo "ECR URL - ${{ needs.aws_auth }}"
+        run: echo "TEST URL - ${{ needs.aws_auth.outputs.test }}"
 
       - name: Docker Device MS Build, tag, and push image to Amazon ECR
         id: build-device-image
@@ -163,7 +164,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: echo ecr url
-        run: echo "ECR URL - ${{ needs.aws_auth.outputs }}"
+        run: echo "TEST URL - ${{ needs.aws_auth.outputs.test }}"
 
       - name: Docker Auth MS Build, tag, and push image to Amazon ECR
         id: build-auth-image
