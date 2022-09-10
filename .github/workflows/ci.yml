@@ -89,7 +89,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     outputs:
-      registry: ${{ steps.login-ecr.outputs.registry }}
+      registry: "**.dkr.ecr.ap-northeast-2.amazonaws.com"
       test: hello
 
     steps:
