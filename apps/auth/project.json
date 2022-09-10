@@ -7,7 +7,7 @@
       "executor": "@nrwl/workspace:run-commands",
       "options": {
         "commands": [
-          "nx affected:build --project=auth --parallel --configuration=production",
+          "nx build auth --parallel --configuration=production",
           "docker build --platform=linux/amd64 -f apps/auth/Dockerfile . -t 930514904954.dkr.ecr.ap-northeast-2.amazonaws.com/auth-microservice:latest",
           "docker push 930514904954.dkr.ecr.ap-northeast-2.amazonaws.com/auth-microservice:latest"
         ],
