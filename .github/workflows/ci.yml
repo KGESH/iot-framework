@@ -110,7 +110,7 @@ jobs:
 
       - name: Export ECR Registry
         id: export-registry
-        run: echo "::set-output name=registry::${{ steps.login-ecr.outputs.registry }}"
+        run: echo "::set-output name=registry::'${{ steps.login-ecr.outputs.registry }}'"
 
 
   docker-build-api:
