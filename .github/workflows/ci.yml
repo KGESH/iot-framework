@@ -100,8 +100,12 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
+      - name: Export ECR Registry
+        id: export-ecr-registry
+        run: echo "::set-output name=registry::${{ steps.login-ecr.outputs.registry }}"
+
     outputs:
-      ecr-registry: ${{ steps.login-ecr.outputs.registry }}
+      ecr-registry: ${{ steps.export-ecr-registry.outputs.registry }}
 
 
   docker-build-api:
