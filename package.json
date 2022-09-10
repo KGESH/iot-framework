@@ -8,8 +8,8 @@
     "start:api": "nx serve api",
     "start:device": "nx serve device",
     "start:auth": "nx serve auth",
-    "build": "npx nx run-many --target=build --all --parallel --configuration=production",
-    "deploy": "npx nx run-many --target=deploy --all --parallel --configuration=production",
+    "build": "nx affected:build --all --parallel --configuration=production --base= origin/main~1 --head= origin/main",
+    "deploy": "nx run-many --target=deploy --all --parallel --configuration=production",
     "test": "nx test",
     "start:db:local": "./scripts/start-db-local.sh",
     "start:redis:local": "./scripts/start-redis-local.sh"
