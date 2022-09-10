@@ -5,7 +5,7 @@ MAINTAINER seonghyeon.jee@gmail.com
 
 
 WORKDIR /app
-COPY dist/apps/device .
+COPY /home/runner/work/iot-framework/iot-framework/dist/apps/device .
 
 RUN apk --no-cache add --virtual .builds-deps build-base python3
 
