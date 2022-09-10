@@ -5,7 +5,7 @@ MAINTAINER seonghyeon.jee@gmail.com
 
 WORKDIR /app
 #COPY package*.json ./
-COPY /home/runner/work/iot-framework/iot-framework/dist/apps/api .
+COPY dist/apps/api .
 
 #RUN npm install
 
