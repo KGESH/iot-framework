@@ -17,7 +17,6 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v3
       - name: Cache node modules
@@ -31,12 +30,65 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-modules-
 
-
       - name: Install Dependencies
         if: steps.node-cache.outputs.cache-hit != 'true'
         run: npm ci
 
+      - name: Source Build
+        run: npm run build
+#
+#      - name: Docker API Gateway Build, tag, and push image to Amazon ECR
+#        id: build-api-image
+#        env:
+#          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+#          ECR_REPOSITORY: ${{ env.ECR_REPOSITORY_API_GATEWAY }}
+#          IMAGE_TAG: latest
+#        run: |
+#          # Build a docker container and
+#          # push it to ECR so that it can
+#          # be deployed to ECS.
+#          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f apps/api/Dockerfile .
+#          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+#          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+#
+#
+#
+#      - name: Docker Device MS Build, tag, and push image to Amazon ECR
+#        id: build-device-image
+#        env:
+#          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+#          ECR_REPOSITORY: ${{ env.ECR_REPOSITORY_DEVICE_MS }}
+#          IMAGE_TAG: latest
+#        run: |
+#          # Build a docker container and
+#          # push it to ECR so that it can
+#          # be deployed to ECS.
+#          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f apps/device/Dockerfile .
+#          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+#          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+#
+#
+#
+#      - name: Docker Auth MS Build, tag, and push image to Amazon ECR
+#        id: build-auth-image
+#        env:
+#          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+#          ECR_REPOSITORY: ${{ env.ECR_REPOSITORY_AUTH_MS }}
+#          IMAGE_TAG: latest
+#        run: |
+#          # Build a docker container and
+#          # push it to ECR so that it can
+#          # be deployed to ECS.
+#          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f apps/auth/Dockerfile .
+#          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+#          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+#
 
+
+  aws_auth:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -49,16 +101,16 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v1
 
 
-      - name: Source Build
-        run: npm run build
-
+  docker-build-api:
+    needs: aws_auth
+    runs-on: ubuntu-latest
+    steps:
       - name: Docker API Gateway Build, tag, and push image to Amazon ECR
         id: build-api-image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: ${{ env.ECR_REPOSITORY_API_GATEWAY }}
           IMAGE_TAG: latest
-#        working-directory: ${{ env.PROJECT_API_DIR }}
         run: |
           # Build a docker container and
           # push it to ECR so that it can
@@ -68,14 +120,16 @@ jobs:
           echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
 
-
+  docker-build-device:
+    needs: aws_auth
+    runs-on: ubuntu-latest
+    steps:
       - name: Docker Device MS Build, tag, and push image to Amazon ECR
         id: build-device-image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: ${{ env.ECR_REPOSITORY_DEVICE_MS }}
           IMAGE_TAG: latest
-#        working-directory: ${{ env.PROJECT_DEVICE_DIR }}
         run: |
           # Build a docker container and
           # push it to ECR so that it can
@@ -85,14 +139,16 @@ jobs:
           echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
 
-
+  docker-build-auth:
+    needs: aws_auth
+    runs-on: ubuntu-latest
+    steps:
       - name: Docker Auth MS Build, tag, and push image to Amazon ECR
         id: build-auth-image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: ${{ env.ECR_REPOSITORY_AUTH_MS }}
           IMAGE_TAG: latest
-#        working-directory: ${{ env.PROJECT_AUTH_DIR }}
         run: |
           # Build a docker container and
           # push it to ECR so that it can
@@ -100,6 +156,8 @@ jobs:
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f apps/auth/Dockerfile .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+
+
 
 
 
