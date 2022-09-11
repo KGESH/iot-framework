@@ -14,16 +14,19 @@ export abstract class ISecretService {
   API_GATEWAY_HOST: API_GATEWAY_ENV.HOST | string;
   API_GATEWAY_PORT: API_GATEWAY_ENV.PORT | string | number;
   API_GATEWAY_URL_PREFIX: API_GATEWAY_ENV.PREFIX | string;
+  API_GATEWAY_URL: API_GATEWAY_ENV.URL | string;
 
   /** Device Microservice */
   DEVICE_MS_HOST: DEVICE_MS_ENV.HOST | string;
   DEVICE_MS_PORT: DEVICE_MS_ENV.PORT | string | number;
   DEVICE_MS_URL_PREFIX: DEVICE_MS_ENV.PREFIX | string;
+  DEVICE_MS_URL: DEVICE_MS_ENV.URL | string;
 
   /** User Microservice */
   USER_MS_HOST: USER_MS_ENV.HOST | string;
   USER_MS_PORT: USER_MS_ENV.PORT | string | number;
   USER_MS_URL_PREFIX: USER_MS_ENV.PREFIX | string;
+  USER_MS_URL: USER_MS_ENV.URL | string;
 
   /** Database */
   DATABASE_TYPE: DATABASE_ENV | DatabaseType | string;

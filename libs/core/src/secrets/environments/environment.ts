@@ -16,8 +16,8 @@
  *  @After
  * "fileReplacements": [
  *             {
- *               "replace": "libs/core/src/lib/secret/environments/environment.ts",
- *               "with": "libs/core/src/lib/secret/environments/environment.prod.ts"
+ *               "replace": "libs/core/src/secrets/environments/environment.ts",
+ *               "with": "libs/core/src/secrets/environments/environment.prod.ts"
  *             }
  *           ]
  * */
@@ -28,14 +28,17 @@ export const environment = {
   API_GATEWAY_HOST: '0.0.0.0',
   API_GATEWAY_PORT: 7777,
   API_GATEWAY_URL_PREFIX: 'api',
+  API_GATEWAY_URL: '0.0.0.0:7777/api/',
 
   DEVICE_MS_HOST: '0.0.0.0',
   DEVICE_MS_PORT: 8000,
   DEVICE_MS_URL_PREFIX: 'device',
+  DEVICE_MS_URL: '0.0.0.0:8000/device/',
 
   USER_MS_HOST: '0.0.0.0',
   USER_MS_PORT: 9000,
   USER_MS_URL_PREFIX: 'user',
+  USER_MS_URL: '0.0.0.0:9000/user/',
 
   DATABASE_TYPE: 'postgres',
   DATABASE_HOST: '0.0.0.0',

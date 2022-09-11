@@ -8,16 +8,19 @@ export class SecretService implements ISecretService {
   API_GATEWAY_URL_PREFIX = environment.API_GATEWAY_URL_PREFIX;
   API_GATEWAY_HOST = environment.API_GATEWAY_HOST;
   API_GATEWAY_PORT = environment.API_GATEWAY_PORT;
+  API_GATEWAY_URL = environment.API_GATEWAY_URL;
 
   /** Device Microservice */
   DEVICE_MS_URL_PREFIX = environment.DEVICE_MS_URL_PREFIX;
   DEVICE_MS_HOST = environment.DEVICE_MS_HOST;
   DEVICE_MS_PORT = environment.DEVICE_MS_PORT;
+  DEVICE_MS_URL = environment.DEVICE_MS_URL;
 
   /** Device Microservice */
   USER_MS_URL_PREFIX = environment.USER_MS_URL_PREFIX;
   USER_MS_HOST = environment.USER_MS_HOST;
   USER_MS_PORT = environment.USER_MS_PORT;
+  USER_MS_URL = environment.USER_MS_URL;
 
   /** Database */
   DATABASE_TYPE = environment.DATABASE_TYPE;

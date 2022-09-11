@@ -11,7 +11,8 @@ import { ISecretService } from '@iot-framework/core';
         return {
           timeout: 5000,
           maxRedirects: 5,
-          baseURL: `http://${secret.DEVICE_MS_HOST}:${secret.DEVICE_MS_PORT}/${secret.DEVICE_MS_URL_PREFIX}/`,
+          // baseURL: `http://${secret.DEVICE_MS_HOST}:${secret.DEVICE_MS_PORT}/${secret.DEVICE_MS_URL_PREFIX}/`,
+          baseURL: secret.DEVICE_MS_URL,
         };
       },
     }),
