@@ -1,4 +1,15 @@
-import { PickType } from '@nestjs/swagger';
-import { User } from '@iot-framework/entities';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsEmail, IsString } from 'class-validator';
 
-export class SignInDto extends PickType(User, ['email', 'password'] as const) {}
+export class SignInDto {
+  @ApiProperty({
+    example: 'Example@google.com',
+    description: 'User unique email',
+  })
+  @IsEmail()
+  email: string;
+
+  @ApiProperty({ example: 'example', description: 'User password' })
+  @IsString()
+  password: string;
+}

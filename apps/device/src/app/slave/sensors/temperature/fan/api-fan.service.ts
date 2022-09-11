@@ -2,11 +2,7 @@ import { CACHE_MANAGER, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { Cache } from 'cache-manager';
 import { SlaveStateDto } from '../../../dto/slave-state.dto';
 import { DeviceFanPowerService } from './device-fan-power.service';
-import { SensorPowerDto, Slave, SlaveQueryRepository } from '@iot-framework/entities';
-import { ResponseEntity } from '@iot-framework/modules';
-import { FanRepository } from './fan.repository';
-import { ApiSlaveService } from '../../../api-slave.service';
-import { EPowerState } from '@iot-framework/utils';
+import { SlaveQueryRepository } from '@iot-framework/entities';
 
 @Injectable()
 export class ApiFanService {

@@ -5,6 +5,7 @@ import { DeviceTemperatureService } from './device-temperature.service';
 @Controller()
 export class DeviceTemperatureController {
   constructor(private readonly deviceTemperatureService: DeviceTemperatureService) {}
+
   @EventPattern('master/+/slave/+/temperature', Transport.MQTT)
   async receiveTemperature(@Payload() temperature: number, @Ctx() context: MqttContext) {
     const [, mId, , sId] = context.getTopic().split('/');

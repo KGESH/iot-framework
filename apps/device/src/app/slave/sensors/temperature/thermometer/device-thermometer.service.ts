@@ -1,8 +1,8 @@
 import { MqttService } from '../../../../mqtt/mqtt.service';
-import { CACHE_MANAGER, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
 import { ThermometerConfigDto } from './dto/thermometer-config.dto';
 import { SlaveQueryRepository } from '@iot-framework/entities';
-import { RedisTTL, ResponseEntity } from '@iot-framework/modules';
+import { RedisTTL } from '@iot-framework/modules';
 import { ThermometerRepository } from './thermometer.repository';
 import { ESlaveConfigTopic, SensorConfigKey } from '@iot-framework/utils';
 import { Cache } from 'cache-manager';

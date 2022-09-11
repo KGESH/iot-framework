@@ -1,7 +1,7 @@
 import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
 import { Sensor, Slave, SlaveQueryRepository } from '@iot-framework/entities';
 import { Cache } from 'cache-manager';
-import { EPowerState, SensorRunningStateKey } from '@iot-framework/utils';
+import { EPowerState, SensorPowerKey, SensorRunningStateKey } from '@iot-framework/utils';
 import { TemperatureRangeDto } from './thermometer/dto/temperature-range.dto';
 import { DeviceFanService } from './fan/device-fan.service';
 import { TemperatureService } from './temperature.service';
@@ -26,7 +26,9 @@ export class DeviceTemperatureService {
 
     const rangeDto = await this.temperatureService.getRangeDto(slave, temperature);
     const needCooling = await this.checkNeedCooling(slave, rangeDto);
+    /** Todo: fix cooling algorithm*/
     if (needCooling) {
+      console.log(`Need cooling`, needCooling);
       this.deviceFanService.cooling(slave, EPowerState.ON);
     }
   }
@@ -41,13 +43,25 @@ export class DeviceTemperatureService {
   }
 
   private async checkNeedCooling(slave: Slave, rangeDto: TemperatureRangeDto): Promise<boolean> {
+    const isFanOn = await this.isFanPowerOn(slave);
     const isFanRunning = await this.isFanRunning(slave);
     const isUnstable = rangeDto.isUnStableTemperature();
 
-    return isFanRunning && isUnstable;
+    return isFanOn && isUnstable && !isFanRunning;
   }
 
-  private async isFanRunning(slave: Slave) {
+  private async isFanPowerOn(slave: Slave): Promise<boolean> {
+    const key = SensorPowerKey({
+      sensor: Sensor.FAN,
+      masterId: slave.masterId,
+      slaveId: slave.slaveId,
+    });
+
+    const cachedRunningState = await this.cacheManager.get<EPowerState>(key);
+    return cachedRunningState === EPowerState.ON;
+  }
+
+  private async isFanRunning(slave: Slave): Promise<boolean> {
     const key = SensorRunningStateKey({
       sensor: Sensor.FAN,
       masterId: slave.masterId,

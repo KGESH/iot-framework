@@ -31,9 +31,8 @@ describe('DeviceWaterPumpService', () => {
       waterPumpCycle: 44,
     });
 
-    console.log(`Recv: `, packet);
     expect(packet).toEqual({
-      pattern: 'master/1111/water',
+      pattern: 'master/11/water',
       data: {
         start: 35,
         index: 35,

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { Temperature } from '@iot-framework/entities';
-import { addDays, addHours } from 'date-fns';
+import { addHours } from 'date-fns';
 
 @Injectable()
 export class TemperatureRepository {

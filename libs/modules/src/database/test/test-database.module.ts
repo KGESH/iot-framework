@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { InjectDataSource, TypeOrmModule } from '@nestjs/typeorm';
 import { TestConnectionService } from './test-connection.service';
+import { TestDatabaseConfigs } from './types';
+import { DataSource } from 'typeorm';
 
 @Module({
   imports: [
@@ -8,5 +10,6 @@ import { TestConnectionService } from './test-connection.service';
       useClass: TestConnectionService,
     }),
   ],
+  exports: [TypeOrmModule],
 })
 export class TestDatabaseModule {}

@@ -1,29 +1,12 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpStatus,
-  Post,
-  Req,
-  Res,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { SignInDto } from './dto/sign-in.dto';
-import {
-  ApiBearerAuth,
-  ApiCreatedResponse,
-  ApiOkResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+// import { SignInDto } from './dto/sign-in.dto';
+import { SignInDto } from '@iot-framework/modules';
+import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { TokensDto } from './dto/tokens.dto';
 import { SWAGGER_TAG } from '../../../utils/swagger/enum';
 import { ApiAuthService } from './api-auth.service';
-import {
-  JwtAuthGuard,
-  LocalAuthGuard,
-  ResponseEntity,
-} from '@iot-framework/modules';
+import { JwtAuthGuard, LocalAuthGuard, ResponseEntity } from '@iot-framework/modules';
 import { Tokens } from './decoratos/tokens.decorator';
 import { CreateUserDto } from '@iot-framework/entities';
 import { RefreshTokenDto } from '@iot-framework/modules';
@@ -37,9 +20,7 @@ export class ApiAuthController {
 
   @Post('signup')
   @ApiCreatedResponse({ description: 'Sign up result example' })
-  async signUp(
-    @Body() createUserDto: CreateUserDto
-  ): Promise<ResponseEntity<unknown>> {
+  async signUp(@Body() createUserDto: CreateUserDto): Promise<ResponseEntity<unknown>> {
     return this.userService.signUp(createUserDto);
   }
 
@@ -55,9 +36,7 @@ export class ApiAuthController {
   async refreshAccessToken(@Req() req: Request, @Res() res: Response) {
     const refreshTokenDto: RefreshTokenDto = req.cookies['auth-cookie'];
     if (!refreshTokenDto) {
-      return res.send(
-        ResponseEntity.ERROR_WITH('Auth Cookie Not Found', HttpStatus.NOT_FOUND)
-      );
+      return res.send(ResponseEntity.ERROR_WITH('Auth Cookie Not Found', HttpStatus.NOT_FOUND));
     }
 
     const response = await this.userService.refresh(refreshTokenDto);
@@ -67,11 +46,7 @@ export class ApiAuthController {
   @Post('signin')
   @UseGuards(LocalAuthGuard)
   @ApiOkResponse({ description: 'Login API', type: TokensDto })
-  async signIn(
-    @Body() signInDto: SignInDto,
-    @Tokens() tokens: TokensDto,
-    @Res() res: Response
-  ) {
+  async signIn(@Body() signInDto: SignInDto, @Tokens() tokens: TokensDto, @Res() res: Response) {
     const { accessToken, refreshToken } = tokens;
 
     res.cookie('auth-cookie', refreshToken, {
@@ -85,17 +60,11 @@ export class ApiAuthController {
   @Get('signout')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  async signOut(
-    @Req() req: Request,
-    @Res() res: Response,
-    @AuthUser() authUser: AuthUserDto
-  ) {
+  async signOut(@Req() req: Request, @Res() res: Response, @AuthUser() authUser: AuthUserDto) {
     const refreshToken = req.cookies['auth-cookie'];
 
     if (!refreshToken) {
-      return res.send(
-        ResponseEntity.ERROR_WITH('Cookie Not Exist', HttpStatus.NOT_FOUND)
-      );
+      return res.send(ResponseEntity.ERROR_WITH('Cookie Not Exist', HttpStatus.NOT_FOUND));
     }
 
     console.log(`Signout User: `, authUser);

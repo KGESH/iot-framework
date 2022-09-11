@@ -12,17 +12,17 @@ export const environment = {
   API_GATEWAY_HOST: '0.0.0.0',
   API_GATEWAY_PORT: 7777,
   API_GATEWAY_URL_PREFIX: 'api',
-  API_GATEWAY_URL: 'gateway/api/',
+  API_GATEWAY_URL: 'http://gateway/api/',
 
   DEVICE_MS_HOST: '0.0.0.0',
   DEVICE_MS_PORT: 8000,
   DEVICE_MS_URL_PREFIX: 'device',
-  DEVICE_MS_URL: 'device/device/',
+  DEVICE_MS_URL: 'http://device/device/',
 
   USER_MS_HOST: '0.0.0.0', // Todo: replace to aws container name
   USER_MS_PORT: 9000,
   USER_MS_URL_PREFIX: 'user',
-  USER_MS_URL: 'auth/user/',
+  USER_MS_URL: 'http://auth/user/',
 
   DATABASE_TYPE: 'postgres',
   DATABASE_HOST: 'iot-public-cluster.cshttetfsiot.ap-northeast-2.rds.amazonaws.com',

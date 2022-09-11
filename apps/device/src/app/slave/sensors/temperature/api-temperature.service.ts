@@ -71,7 +71,7 @@ export class ApiTemperatureService {
         if (!cachedDay) {
           const dayBegin = new Date(formattedDay);
           const dayEnd = addDays(dayBegin, 1);
-          const average = await this.getAverage(slave, formattedDay, dayBegin, dayEnd);
+          const average = await this.getAverage(slave, dayBegin, dayEnd);
           if (!average) {
             return;
           }
@@ -87,7 +87,7 @@ export class ApiTemperatureService {
     return new GraphSource(points);
   }
 
-  private async getAverage(slave: Slave, day: string, begin: Date, end: Date) {
+  private async getAverage(slave: Slave, begin: Date, end: Date) {
     return await this.temperatureQueryRepository.getAverageBySlaveFK(slave.id, begin, end);
   }
 }
