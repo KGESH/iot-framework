@@ -31,11 +31,10 @@ export const environment = {
   DATABASE_PASSWORD: 'gksdldma123',
   DATABASE_PORT: 5432,
 
-  REDIS_HOST: 'iot-public-cluster-cache.hrfbrq.ng.0001.apn2.cache.amazonaws.com',
+  REDIS_HOST: 'iot-public-cluster-redis-001.hrfbrq.0001.apn2.cache.amazonaws.com',
   REDIS_PORT: 6379,
 
   MQTT_BROKER_URL: 'mqtt://43.200.81.115:1883',
-
   JWT_ACCESS_SECRET: 'my_dev_secret',
   JWT_REFRESH_SECRET: 'my_dev_refresh_secret',
   JWT_ACCESS_EXPIRES_IN: '30m',
