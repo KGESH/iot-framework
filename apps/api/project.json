@@ -7,7 +7,7 @@
       "executor": "@nrwl/workspace:run-commands",
       "options": {
         "commands": [
-          "nx affected:build --project=api --parallel --configuration=production",
+          "nx build --project=api --parallel --configuration=production",
           "docker build --platform=linux/amd64 -f apps/api/Dockerfile . -t 930514904954.dkr.ecr.ap-northeast-2.amazonaws.com/api-gateway:latest",
           "docker push 930514904954.dkr.ecr.ap-northeast-2.amazonaws.com/api-gateway:latest"
         ],
