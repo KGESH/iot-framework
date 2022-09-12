@@ -17,12 +17,12 @@ export const environment = {
   DEVICE_MS_HOST: '0.0.0.0',
   DEVICE_MS_PORT: 8000,
   DEVICE_MS_URL_PREFIX: 'device',
-  DEVICE_MS_URL: 'http://device/device/',
+  DEVICE_MS_URL: `http://device:${process.env.DEVICE_PORT_8000_TCP_PORT}/device/`,
 
   USER_MS_HOST: '0.0.0.0', // Todo: replace to aws container name
   USER_MS_PORT: 9000,
   USER_MS_URL_PREFIX: 'user',
-  USER_MS_URL: 'http://auth/user/',
+  USER_MS_URL: `http://auth:${process.env.AUTH_PORT_9000_TCP_PORT}/user/`,
 
   DATABASE_TYPE: 'postgres',
   DATABASE_HOST: 'iot-public-cluster.cshttetfsiot.ap-northeast-2.rds.amazonaws.com',
