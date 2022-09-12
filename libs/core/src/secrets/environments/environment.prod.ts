@@ -28,7 +28,7 @@ export const environment = {
   DATABASE_HOST: 'iot-public-cluster.cshttetfsiot.ap-northeast-2.rds.amazonaws.com',
   DATABASE_NAME: 'master',
   DATABASE_USER: 'postgres',
-  DATABASE_PASSWORD: 'gksdldma123',
+  DATABASE_PASSWORD: 'gksdldma123', // example DB
   DATABASE_PORT: 5432,
 
   REDIS_HOST: 'iot-public-cluster-redis-001.hrfbrq.0001.apn2.cache.amazonaws.com',
