@@ -13,8 +13,8 @@ export class ApiThermometerController {
   constructor(private readonly apiThermometerService: ApiThermometerService) {}
 
   @Post('config')
-  @UseGuards(RolesGuard([UserRoles.ADMIN, UserRoles.USER]))
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(RolesGuard([UserRoles.ADMIN, UserRoles.USER]))
+  // @UseGuards(JwtAuthGuard)
   async setThermometerConfig(@Body() thermometerConfigDto: ThermometerConfigDto) {
     return this.apiThermometerService.setThermometerConfig(thermometerConfigDto);
   }

@@ -7,8 +7,8 @@ import { UserRoles } from '@iot-framework/entities';
 import { TemperatureBetweenDto } from '@iot-framework/entities';
 
 @ApiTags(SWAGGER_TAG.THERMOMETER)
-@UseGuards(RolesGuard([UserRoles.ADMIN, UserRoles.USER]))
-@UseGuards(JwtAuthGuard)
+// @UseGuards(RolesGuard([UserRoles.ADMIN, UserRoles.USER]))
+// @UseGuards(JwtAuthGuard)
 @ApiBearerAuth()
 @Controller('device/temperature')
 export class ApiTemperatureController {

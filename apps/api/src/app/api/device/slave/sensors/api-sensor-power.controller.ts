@@ -8,8 +8,8 @@ import { UserRoles } from '@iot-framework/entities';
 
 @ApiTags(SWAGGER_TAG.SENSOR)
 @ApiBearerAuth()
-@UseGuards(RolesGuard([UserRoles.ADMIN, UserRoles.USER]))
-@UseGuards(JwtAuthGuard)
+// @UseGuards(RolesGuard([UserRoles.ADMIN, UserRoles.USER]))
+// @UseGuards(JwtAuthGuard)
 @Controller('device/sensors')
 export class ApiSensorPowerController {
   constructor(private readonly apiSensorPowerService: ApiSensorPowerService) {}

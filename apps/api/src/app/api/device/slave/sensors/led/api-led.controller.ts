@@ -13,8 +13,8 @@ export class ApiLedController {
   constructor(private readonly apiLedService: ApiLedService) {}
 
   @Post('config')
-  @UseGuards(RolesGuard([UserRoles.ADMIN, UserRoles.USER]))
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(RolesGuard([UserRoles.ADMIN, UserRoles.USER]))
+  // @UseGuards(JwtAuthGuard)
   async setLedConfig(@Body() ledConfigDto: LedConfigDto) {
     return this.apiLedService.setLedConfig(ledConfigDto);
   }

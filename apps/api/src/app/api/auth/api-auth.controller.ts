@@ -26,8 +26,8 @@ export class ApiAuthController {
 
   /** Todo: extract to auth MS */
   @Get('jwt')
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
+  // @ApiBearerAuth()
+  // @UseGuards(JwtAuthGuard)
   jwt() {
     return true;
   }
@@ -45,7 +45,7 @@ export class ApiAuthController {
 
   @Post('signin')
   @UseGuards(LocalAuthGuard)
-  @ApiOkResponse({ description: 'Login API', type: TokensDto })
+  @ApiOkResponse({ description: 'Login API', type: ResponseEntity })
   async signIn(@Body() signInDto: SignInDto, @Tokens() tokens: TokensDto, @Res() res: Response) {
     const { accessToken, refreshToken } = tokens;
 
@@ -59,7 +59,7 @@ export class ApiAuthController {
 
   @Get('signout')
   @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   async signOut(@Req() req: Request, @Res() res: Response, @AuthUser() authUser: AuthUserDto) {
     const refreshToken = req.cookies['auth-cookie'];
 

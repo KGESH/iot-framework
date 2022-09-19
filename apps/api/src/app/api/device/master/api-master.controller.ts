@@ -14,18 +14,15 @@ export class ApiMasterController {
   constructor(private readonly masterService: ApiMasterService) {}
 
   @Post()
-  @UseGuards(RolesGuard([UserRoles.ADMIN, UserRoles.USER]))
-  @UseGuards(JwtAuthGuard)
-  async createMaster(
-    @AuthUser() authUser: AuthUserDto,
-    @Body() createMasterDto: CreateMasterDto
-  ) {
+  // @UseGuards(RolesGuard([UserRoles.ADMIN, UserRoles.USER]))
+  // @UseGuards(JwtAuthGuard)
+  async createMaster(@AuthUser() authUser: AuthUserDto, @Body() createMasterDto: CreateMasterDto) {
     return this.masterService.createMaster(createMasterDto, authUser);
   }
 
   @Get('state')
-  @UseGuards(RolesGuard([UserRoles.ADMIN, UserRoles.USER]))
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(RolesGuard([UserRoles.ADMIN, UserRoles.USER]))
+  // @UseGuards(JwtAuthGuard)
   async getMasterState(@Query('master_id') masterId: number) {
     return this.masterService.getMasterState(masterId);
   }
