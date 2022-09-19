@@ -61,11 +61,7 @@ export class IotGatewayPacket implements BasePacket {
     this.body = body;
   }
 
-  static makePacket(
-    packetType: PacketType,
-    header: BasePacketHeader,
-    dataField?: number[]
-  ) {
+  static makePacket(packetType: PacketType, header: BasePacketHeader, dataField?: number[]) {
     switch (packetType) {
       case PacketType.TEMPERATURE:
         return IotGatewayPacket.makeTemperaturePacket(header, dataField);
@@ -82,10 +78,7 @@ export class IotGatewayPacket implements BasePacket {
     }
   }
 
-  private static makeTemperaturePacket(
-    header: BasePacketHeader,
-    dataField?: number[]
-  ): RawPacket {
+  private static makeTemperaturePacket(header: BasePacketHeader, dataField?: number[]): string {
     return new IotGatewayPacket(header, {
       address_high: MemoryAddressHigh.TEMPERATURE,
       address_low: MemoryAddressLow.TEMPERATURE,
@@ -93,10 +86,7 @@ export class IotGatewayPacket implements BasePacket {
     }).serialize();
   }
 
-  private static makeLedPacket(
-    header: BasePacketHeader,
-    dataField?: number[]
-  ): RawPacket {
+  private static makeLedPacket(header: BasePacketHeader, dataField?: number[]): string {
     return new IotGatewayPacket(header, {
       address_high: MemoryAddressHigh.LED,
       address_low: MemoryAddressLow.LED,
@@ -104,10 +94,7 @@ export class IotGatewayPacket implements BasePacket {
     }).serialize();
   }
 
-  private static makeFanPacket(
-    header: BasePacketHeader,
-    dataField?: number[]
-  ): RawPacket {
+  private static makeFanPacket(header: BasePacketHeader, dataField?: number[]): string {
     return new IotGatewayPacket(header, {
       address_high: MemoryAddressHigh.FAN,
       address_low: MemoryAddressLow.FAN,
@@ -115,10 +102,7 @@ export class IotGatewayPacket implements BasePacket {
     }).serialize();
   }
 
-  private static makeMotorPacket(
-    header: BasePacketHeader,
-    dataField?: number[]
-  ): RawPacket {
+  private static makeMotorPacket(header: BasePacketHeader, dataField?: number[]): string {
     return new IotGatewayPacket(header, {
       address_high: MemoryAddressHigh.MOTOR,
       address_low: MemoryAddressLow.MOTOR,
@@ -126,7 +110,7 @@ export class IotGatewayPacket implements BasePacket {
     }).serialize();
   }
 
-  serialize(): RawPacket {
-    return { ...this.header, ...this.body };
+  serialize(): string {
+    return JSON.stringify({ ...this.header, ...this.body });
   }
 }

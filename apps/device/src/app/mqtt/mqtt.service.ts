@@ -10,7 +10,7 @@ export class MqttService {
     private readonly broker: ClientProxy
   ) {}
 
-  publish(topic: string, payload: RawPacket) {
+  publish(topic: string, payload: string) {
     return this.broker.emit(topic, payload);
   }
 }
