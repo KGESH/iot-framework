@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { Slave, Temperature } from '@iot-framework/entities';
-import { addHours } from 'date-fns';
+import { addHours, addMinutes } from 'date-fns';
 
 @Injectable()
 export class TemperatureRepository {
@@ -17,8 +17,8 @@ export class TemperatureRepository {
     const slave = await this.dataSource.getRepository(Slave).findOneBy({ masterId, slaveId });
     const slaveFK = slave.id;
     let currentDate: Date;
-    for (currentDate = begin; currentDate < end; currentDate = addHours(currentDate, 1)) {
-      const temperature = Math.floor(Math.random() * (10 - 5) + 5);
+    for (currentDate = begin; currentDate < end; currentDate = addMinutes(currentDate, 10)) {
+      const temperature = Math.floor(Math.random() * (25 - 20) + 20);
       const data = this.dataSource
         .getRepository(Temperature)
         .create({ slaveFK, temperature, createdAt: currentDate });
