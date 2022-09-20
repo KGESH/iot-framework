@@ -24,6 +24,9 @@ export class ApiMasterController {
    * Todo: refactor to better status code */
   @Get('polling')
   async getPollingState(@Query('masterId') masterId: number) {
+    /** Todo: remove after demo */
+    return EPollingState.OK;
+
     const pollingState = await this.pollingService.getPollingState(masterId);
 
     switch (pollingState) {
