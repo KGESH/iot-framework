@@ -16,6 +16,7 @@ import { DeviceTemperatureService } from '../device-temperature.service';
 import { ApiTemperatureController } from '../api-temperature.controller';
 import { ApiTemperatureService } from '../api-temperature.service';
 import { TemperatureService } from '../temperature.service';
+import { DeviceSlaveController } from '../../../device-slave.controller';
 
 @Module({
   imports: [MqttBrokerModule, TemperatureModule, SlaveModule],

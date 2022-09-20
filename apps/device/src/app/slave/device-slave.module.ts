@@ -9,6 +9,7 @@ import { DeviceThermometerModule } from './sensors/temperature/thermometer/devic
 import { DeviceWaterPumpModule } from './sensors/water-pump/device-water-pump.module';
 import { DeviceLedModule } from './sensors/led/device-led.module';
 import { DeviceFanModule } from './sensors/temperature/fan/device-fan.module';
+import { DeviceSlaveController } from './device-slave.controller';
 
 /** Todo: Add Sensors */
 @Module({
@@ -20,7 +21,7 @@ import { DeviceFanModule } from './sensors/temperature/fan/device-fan.module';
     DeviceLedModule,
     DeviceFanModule,
   ],
-  controllers: [ApiSlaveController],
+  controllers: [ApiSlaveController, DeviceSlaveController],
   providers: [DeviceSlaveService, ApiSlaveService, SlaveRepository, MasterQueryRepository],
 })
 export class DeviceSlaveModule {}
