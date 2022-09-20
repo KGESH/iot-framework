@@ -41,7 +41,8 @@ export class ApiTemperatureController {
   }
 
   @Post('mock')
-  async createMock(@Query('begin') begin: Date, @Query('end') end: Date) {
-    await this.temperatureRepository.createMockData(1, begin, end);
+  async createMock(@Body() mockDto: TemperatureBetweenDto) {
+    const { masterId, slaveId, begin, end } = mockDto;
+    await this.temperatureRepository.createMockData(masterId, slaveId, begin, end);
   }
 }

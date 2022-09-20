@@ -22,4 +22,8 @@ export class ApiTemperatureService {
       temperatureBetweenDto
     );
   }
+
+  async createMockTemperatures(mockDto: TemperatureBetweenDto) {
+    return this.deviceClientService.post('temperature/mock', mockDto);
+  }
 }
