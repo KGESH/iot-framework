@@ -6,11 +6,12 @@ import { Temperature } from '@iot-framework/entities';
 export class TemperatureQueryRepository {
   constructor(private readonly dataSource: DataSource) {}
 
+  /** Todo: replace after demo */
   async getTemperatures(slaveFK: number, begin: Date, end: Date) {
     return this.dataSource
       .getRepository(Temperature)
       .createQueryBuilder()
-      .select(['temperature', 'created_at'])
+      .select(['temperature AS x', 'created_at AS y'])
       .where(`slave_fk = :id`, { id: slaveFK })
       .andWhere(`created_at BETWEEN :begin AND :end`, { begin, end })
       .limit(100000)
