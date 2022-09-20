@@ -1,9 +1,8 @@
-import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Post, Query } from '@nestjs/common';
 import { ApiTemperatureService } from './api-temperature.service';
-import { JwtAuthGuard, ResponseEntity, RolesGuard } from '@iot-framework/modules';
+import { ResponseEntity } from '@iot-framework/modules';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { SWAGGER_TAG } from '../../../../../../utils/swagger/enum';
-import { UserRoles } from '@iot-framework/entities';
 import { TemperatureBetweenDto } from '@iot-framework/entities';
 
 @ApiTags(SWAGGER_TAG.THERMOMETER)
@@ -34,6 +33,11 @@ export class ApiTemperatureController {
 
   @Post('mock')
   async createMockTemperatures(@Body() mockDto: TemperatureBetweenDto) {
-    return this.apiTemperatureService.createMockTemperatures(mockDto);
+    try {
+      await this.apiTemperatureService.createMockTemperatures(mockDto);
+      return ResponseEntity.OK();
+    } catch (e) {
+      return ResponseEntity.ERROR_WITH(e, HttpStatus.BAD_REQUEST);
+    }
   }
 }
