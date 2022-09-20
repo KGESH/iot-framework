@@ -29,7 +29,13 @@ export class ApiTemperatureService {
     const { masterId, slaveId, begin, end } = temperatureBetweenDto;
 
     const slave = await this.slaveQueryRepository.findOneOrFail(masterId, slaveId);
-    return await this.temperatureQueryRepository.getTemperatures(slave.id, begin, end);
+    const temperatures = await this.temperatureQueryRepository.getTemperatures(
+      slave.id,
+      begin,
+      end
+    );
+
+    return ResponseEntity.OK_WITH(temperatures);
   }
 
   async getCurrentTemperature(masterId: number, slaveId: number): Promise<ResponseEntity<number>> {
@@ -46,7 +52,9 @@ export class ApiTemperatureService {
     return await this.cacheManager.get<number>(key);
   }
 
-  async getAveragePoints(temperatureBetweenDto: TemperatureBetweenDto) {
+  async getAveragePoints(
+    temperatureBetweenDto: TemperatureBetweenDto
+  ): Promise<ResponseEntity<GraphPoint[]>> {
     const { masterId, slaveId, begin, end } = temperatureBetweenDto;
     const slave = await this.slaveQueryRepository.findOneOrFail(masterId, slaveId);
 
@@ -54,7 +62,7 @@ export class ApiTemperatureService {
     const keys = TemperatureKey.getDayKeys(masterId, slaveId, begin, end);
 
     const graphSource = await this.makeGraphSource(slave, keys, min, max);
-    return graphSource.sort();
+    return ResponseEntity.OK_WITH(graphSource.sort());
   }
 
   private async makeGraphSource(
