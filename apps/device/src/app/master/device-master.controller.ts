@@ -19,6 +19,8 @@ export class DeviceMasterController {
   @EventPattern(POLLING, Transport.MQTT)
   async receivePollingResult(@Ctx() context: MqttContext, @Payload() pollingStatus: EPollingState) {
     const key = MasterPollingKey(context.getTopic());
+    // master/+/polling
+    const replaced = 'master/20480/polling';
     // console.log(`이전 상태 값: `, await this.cacheManager.get<number>(key));
 
     if (pollingStatus !== EPollingState.OK) {
@@ -30,7 +32,8 @@ export class DeviceMasterController {
     }
 
     /** Cache Status To Redis */
-    await this.cacheManager.set<number>(key, pollingStatus, { ttl: RedisTTL.MINUTE });
+    await this.cacheManager.set<number>(replaced, pollingStatus, { ttl: RedisTTL.MINUTE });
+    // await this.cacheManager.set<number>(key, pollingStatus, { ttl: RedisTTL.MINUTE });
   }
 
   /**

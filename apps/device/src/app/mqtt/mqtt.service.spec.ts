@@ -17,10 +17,7 @@ describe('MQTT Service', () => {
 
   beforeEach(async () => {
     const app = await Test.createTestingModule({
-      providers: [
-        MqttService,
-        { provide: MQTT_TOKEN.DEVICE_BROKER, useClass: MockMqttBroker },
-      ],
+      providers: [MqttService, { provide: MQTT_TOKEN.DEVICE_BROKER, useClass: MockMqttBroker }],
     }).compile();
 
     mqttService = app.get<MqttService>(MqttService);
@@ -43,7 +40,7 @@ describe('MQTT Service', () => {
         data_list: [100],
       };
 
-      const publishResult = await mqttService.publish('MockTopic', mockPacket);
+      const publishResult = await mqttService.publish('MockTopic', JSON.stringify(mockPacket));
       expect(publishResult).toEqual({
         pattern: 'MockTopic',
         data: {
