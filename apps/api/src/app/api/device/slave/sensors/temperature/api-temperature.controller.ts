@@ -32,7 +32,7 @@ export class ApiTemperatureController {
     return this.apiTemperatureService.getTemperatures(temperatureBetweenDto);
   }
 
-  @Get('mock')
+  @Post('mock')
   async createMockTemperatures(@Body() mockDto: TemperatureBetweenDto) {
     return this.apiTemperatureService.createMockTemperatures(mockDto);
   }
