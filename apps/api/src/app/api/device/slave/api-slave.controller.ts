@@ -3,9 +3,10 @@ import { ApiBearerAuth, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { ApiMasterService } from '../master/api-master.service';
 import { ApiSlaveService } from './api-slave.service';
 import { SWAGGER_TAG } from '../../../../utils/swagger/enum';
-import { JwtAuthGuard, ResponseEntity, RolesGuard } from '@iot-framework/modules';
+import { AuthUserDto, JwtAuthGuard, ResponseEntity, RolesGuard } from '@iot-framework/modules';
 import { Slave, SlaveConfigsResponse, UserRoles } from '@iot-framework/entities';
 import { CreateSlaveDto } from './dto/create-slave.dto';
+import { AuthUser } from '../../auth/decoratos/auth-user.decorator';
 
 @ApiTags(SWAGGER_TAG.SLAVE)
 @ApiBearerAuth()
@@ -16,7 +17,7 @@ export class ApiSlaveController {
   @Post()
   @ApiCreatedResponse({ type: ResponseEntity })
   // @UseGuards(RolesGuard([UserRoles.ADMIN, UserRoles.USER]))
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   async createSlave(@Body() createSlaveDto: CreateSlaveDto): Promise<ResponseEntity<Slave>> {
     return this.slaveService.createSlave(createSlaveDto);
   }

@@ -6,6 +6,7 @@ import { DevicePollingService } from './device-polling.service';
 import { CreateMasterDto } from './dto/create-master.dto';
 import { EPollingState } from './types/polling.enum';
 import { ResponseEntity } from '@iot-framework/modules';
+import { Master } from '@iot-framework/entities';
 
 @ApiTags(SWAGGER_TAG.MASTER)
 @Controller('master')
@@ -18,6 +19,11 @@ export class ApiMasterController {
   @Post()
   async createMaster(@Body() createMasterDto: CreateMasterDto) {
     return await this.masterService.createMaster(createMasterDto);
+  }
+
+  @Get('all')
+  async getMastersSlaves(@Query('userId') userId: number): Promise<ResponseEntity<Master[]>> {
+    return await this.masterService.findMastersSlavesByUserId(userId);
   }
 
   /**

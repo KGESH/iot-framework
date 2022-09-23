@@ -1,9 +1,9 @@
 import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { CreateMasterDto } from './dto/create-master.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { UserRoles } from '@iot-framework/entities';
+import { Master, UserRoles } from '@iot-framework/entities';
 import { ApiMasterService } from './api-master.service';
-import { AuthUserDto, JwtAuthGuard, RolesGuard } from '@iot-framework/modules';
+import { AuthUserDto, JwtAuthGuard, ResponseEntity, RolesGuard } from '@iot-framework/modules';
 import { AuthUser } from '../../auth/decoratos/auth-user.decorator';
 import { SWAGGER_TAG } from '../../../../utils/swagger/enum';
 
@@ -15,15 +15,21 @@ export class ApiMasterController {
 
   @Post()
   // @UseGuards(RolesGuard([UserRoles.ADMIN, UserRoles.USER]))
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   async createMaster(@AuthUser() authUser: AuthUserDto, @Body() createMasterDto: CreateMasterDto) {
     return this.masterService.createMaster(createMasterDto, authUser);
   }
 
   @Get('state')
   // @UseGuards(RolesGuard([UserRoles.ADMIN, UserRoles.USER]))
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   async getMasterState(@Query('master_id') masterId: number) {
     return this.masterService.getMasterState(masterId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('all')
+  async getMastersByUserId(@AuthUser() authUser: AuthUserDto): Promise<ResponseEntity<Master[]>> {
+    return this.masterService.getMastersByUserId(authUser.id);
   }
 }

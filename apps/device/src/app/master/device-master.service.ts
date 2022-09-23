@@ -1,5 +1,5 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { MasterQueryRepository } from '@iot-framework/entities';
+import { Master, MasterQueryRepository } from '@iot-framework/entities';
 import { CreateMasterDto } from './dto/create-master.dto';
 import { notAffected, ResponseEntity } from '@iot-framework/modules';
 import { DeviceMasterRepository } from './device-master.repository';
@@ -21,6 +21,11 @@ export class DeviceMasterService {
 
     await this.masterRepository.createMaster(createMasterDto);
     return ResponseEntity.OK();
+  }
+
+  async findMastersSlavesByUserId(userId: number): Promise<ResponseEntity<Master[]>> {
+    const masters = await this.masterQueryRepository.findMastersWithSlavesByUserId(userId);
+    return ResponseEntity.OK_WITH(masters);
   }
 
   async deleteMaster(masterId: number) {

@@ -20,9 +20,27 @@ export class MasterQueryRepository {
     return master;
   }
 
-  async findMastersByUserId(userId: number): Promise<Master[]> {
-    return this.dataSource.getRepository(Master).findBy({
-      userFK: userId,
+  /**
+   * This query return 'relation tree'.
+   * */
+  async findMastersWithSlavesByUserId(userId: number): Promise<Master[]> {
+    const masters = await this.dataSource.getRepository(Master).find({
+      where: { userFK: userId },
+      relations: {
+        slaves: true,
+      },
+      select: {
+        masterId: true,
+        slaves: {
+          masterId: true,
+          slaveId: true,
+        },
+      },
     });
+
+    if (!masters) {
+      throw ResponseEntity.ERROR_WITH('Masters not found!', HttpStatus.BAD_REQUEST);
+    }
+    return masters;
   }
 }

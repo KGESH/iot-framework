@@ -28,17 +28,17 @@ export const environment = {
   API_GATEWAY_HOST: '0.0.0.0',
   API_GATEWAY_PORT: 7777,
   API_GATEWAY_URL_PREFIX: 'api',
-  API_GATEWAY_URL: '0.0.0.0:7777/api/',
+  API_GATEWAY_URL: 'http://0.0.0.0:7777/api/',
 
   DEVICE_MS_HOST: '0.0.0.0',
   DEVICE_MS_PORT: 8000,
   DEVICE_MS_URL_PREFIX: 'device',
-  DEVICE_MS_URL: '0.0.0.0:8000/device/',
+  DEVICE_MS_URL: 'http://0.0.0.0:8000/device/',
 
   USER_MS_HOST: '0.0.0.0',
   USER_MS_PORT: 9000,
   USER_MS_URL_PREFIX: 'user',
-  USER_MS_URL: '0.0.0.0:9000/user/',
+  USER_MS_URL: 'http://0.0.0.0:9000/user/',
 
   DATABASE_TYPE: 'postgres',
   DATABASE_HOST: '0.0.0.0',

@@ -3,10 +3,9 @@ import { Cache } from 'cache-manager';
 import { ISecretService } from '@iot-framework/core';
 import { ValidateJwtDto } from './dto/validate-jwt.dto';
 import { JwtService } from '@nestjs/jwt';
-import { User, UserQueryRepository } from '@iot-framework/entities';
+import { User, UserQueryRepository, CreateUserDto } from '../../../entities/src/domain/user';
 import { ResponseEntity } from '../response/response.entity';
 import { TokensDto } from './dto/tokens.dto';
-import { CreateUserDto } from '@iot-framework/entities';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { AuthClientService } from '../microservice-client';
 
@@ -21,28 +20,17 @@ export class AuthService {
   ) {}
 
   async signUp(createUserDto: CreateUserDto): Promise<ResponseEntity<User>> {
-    return this.authClientService.post<ResponseEntity<User>>(
-      'signup',
-      createUserDto
-    );
+    return this.authClientService.post<ResponseEntity<User>>('signup', createUserDto);
   }
 
-  async signIn(
-    email: string,
-    rawPassword: string
-  ): Promise<ResponseEntity<TokensDto | null>> {
-    return this.authClientService.post<ResponseEntity<TokensDto | null>>(
-      'signin',
-      {
-        email,
-        password: rawPassword,
-      }
-    );
+  async signIn(email: string, rawPassword: string): Promise<ResponseEntity<TokensDto | null>> {
+    return this.authClientService.post<ResponseEntity<TokensDto | null>>('signin', {
+      email,
+      password: rawPassword,
+    });
   }
 
-  async refresh(
-    refreshTokenDto: RefreshTokenDto
-  ): Promise<ResponseEntity<unknown>> {
+  async refresh(refreshTokenDto: RefreshTokenDto): Promise<ResponseEntity<unknown>> {
     return this.authClientService.post('refresh', refreshTokenDto);
   }
 
