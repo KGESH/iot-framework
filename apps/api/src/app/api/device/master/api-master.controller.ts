@@ -29,7 +29,9 @@ export class ApiMasterController {
 
   @UseGuards(JwtAuthGuard)
   @Get('all')
-  async getMastersByUserId(@AuthUser() authUser: AuthUserDto): Promise<ResponseEntity<Master[]>> {
+  async getMastersByUserId(
+    @AuthUser() authUser: AuthUserDto
+  ): Promise<ResponseEntity<{ masterId: number; slaves: number[] }[]>> {
     return this.masterService.getMastersByUserId(authUser.id);
   }
 }

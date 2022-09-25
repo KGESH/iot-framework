@@ -28,7 +28,9 @@ export class ApiMasterService {
     });
   }
 
-  async getMastersByUserId(userId: number): Promise<ResponseEntity<Master[]>> {
+  async getMastersByUserId(
+    userId: number
+  ): Promise<ResponseEntity<{ masterId: number; slaves: number[] }[]>> {
     return this.deviceClientService.get('master/all', { params: { userId } });
   }
 }

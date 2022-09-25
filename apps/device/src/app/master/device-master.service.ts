@@ -23,9 +23,17 @@ export class DeviceMasterService {
     return ResponseEntity.OK();
   }
 
-  async findMastersSlavesByUserId(userId: number): Promise<ResponseEntity<Master[]>> {
+  /** Frontend business logic */
+  async findMastersSlavesByUserId(
+    userId: number
+  ): Promise<ResponseEntity<{ masterId: number; slaves: number[] }[]>> {
     const masters = await this.masterQueryRepository.findMastersWithSlavesByUserId(userId);
-    return ResponseEntity.OK_WITH(masters);
+    const masterIdsWithSlaveIds = masters.map((master) => {
+      const slaveIds = master.slaves.map((slave) => slave.id);
+      return { masterId: master.id, slaves: slaveIds };
+    });
+
+    return ResponseEntity.OK_WITH(masterIdsWithSlaveIds);
   }
 
   async deleteMaster(masterId: number) {

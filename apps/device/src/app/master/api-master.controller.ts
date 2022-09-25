@@ -22,7 +22,9 @@ export class ApiMasterController {
   }
 
   @Get('all')
-  async getMastersSlaves(@Query('userId') userId: number): Promise<ResponseEntity<Master[]>> {
+  async getMastersSlaves(
+    @Query('userId') userId: number
+  ): Promise<ResponseEntity<{ masterId: number; slaves: number[] }[]>> {
     return await this.masterService.findMastersSlavesByUserId(userId);
   }
 
