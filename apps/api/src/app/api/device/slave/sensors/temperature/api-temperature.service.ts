@@ -26,4 +26,8 @@ export class ApiTemperatureService {
   async createMockTemperatures(mockDto: TemperatureBetweenDto) {
     return this.deviceClientService.post('temperature/mock', mockDto);
   }
+
+  async deleteMockTemperatures(masterId: number, slaveId: number) {
+    return this.deviceClientService.delete('temperature/mock', { params: { masterId, slaveId } });
+  }
 }

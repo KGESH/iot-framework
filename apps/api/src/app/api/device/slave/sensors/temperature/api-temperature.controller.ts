@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpStatus, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Post, Query } from '@nestjs/common';
 import { ApiTemperatureService } from './api-temperature.service';
 import { ResponseEntity } from '@iot-framework/modules';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
@@ -38,6 +38,18 @@ export class ApiTemperatureController {
       return ResponseEntity.OK();
     } catch (e) {
       return ResponseEntity.ERROR_WITH(e, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @Delete('mock')
+  async deleteMockTemperatures(
+    @Query('masterId') masterId: number,
+    @Query('slaveId') slaveId: number
+  ) {
+    try {
+      await this.apiTemperatureService.deleteMockTemperatures(masterId, slaveId);
+    } catch (e) {
+      console.log(e);
     }
   }
 }

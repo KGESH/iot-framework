@@ -9,7 +9,7 @@ import { ISecretService } from '@iot-framework/core';
       inject: [ISecretService],
       useFactory: (secret: ISecretService) => {
         return {
-          timeout: 5000,
+          timeout: 30000,
           maxRedirects: 5,
           // baseURL: `http://${secret.USER_MS_HOST}:${secret.USER_MS_PORT}/${secret.USER_MS_URL_PREFIX}/`,
           baseURL: secret.USER_MS_URL,

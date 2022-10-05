@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, Query } from '@nestjs/common';
 import { ApiTemperatureService } from './api-temperature.service';
 import { TemperatureBetweenDto } from '@iot-framework/entities';
 import { TemperatureRepository } from './temperature.repository';
@@ -44,5 +44,10 @@ export class ApiTemperatureController {
   async createMock(@Body() mockDto: TemperatureBetweenDto) {
     const { masterId, slaveId, begin, end } = mockDto;
     await this.temperatureRepository.createMockData(masterId, slaveId, begin, end);
+  }
+
+  @Delete('mock')
+  async deleteMock(@Query('masterId') masterId: number, @Query('slaveId') slaveId: number) {
+    return await this.temperatureRepository.deleteMockData(masterId, slaveId);
   }
 }
