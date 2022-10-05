@@ -3,6 +3,7 @@ import { Ctx, EventPattern, MqttContext, Payload, Transport } from '@nestjs/micr
 import { SlaveStateDto } from './dto/slave-state.dto';
 import { Sensor } from '@iot-framework/entities';
 import { Cache } from 'cache-manager';
+import { RedisTTL } from '@iot-framework/modules';
 
 @Controller()
 export class DeviceSlaveController {
@@ -13,23 +14,18 @@ export class DeviceSlaveController {
     const [, mId, , sId, sensorName] = context.getTopic().split('/');
     const masterId = parseInt(mId);
     const slaveId = parseInt(sId);
-    const sensor = `${sensorName}/state`; // 🤔
-    /**
-     * Todo: Extract Service & cleanup */
-    /**
-     * Todo: Cache Power State oxd1 */
-    console.log(`slave info: `, masterId, slaveId, sensor);
-    console.log(`salve runtime: `, runtimeMinutes);
-    const stateDto = new SlaveStateDto(masterId, slaveId, sensor as Sensor);
+    console.log(`@@@@@@@@@@@ Recv Slave STATE@@@@@@@@@@@`);
+    console.log(context.getTopic());
+    console.log(context.getPacket());
+    const stateDto = new SlaveStateDto(masterId, slaveId, sensorName as Sensor);
     const key = stateDto.getRunningStateKey();
-    console.log(`Mock key: `, key);
 
     if (runtimeMinutes > 0) {
-      await this.cacheManager.set<string>(key, 'on', {
-        ttl: runtimeMinutes * 60, // make minutes -> second
+      const cachedResult = await this.cacheManager.set<string>(key, 'on', {
+        ttl: runtimeMinutes * RedisTTL.MINUTE, // make minutes -> second
       });
-    }
 
-    console.log(`receive slave state packet: `, context.getPacket());
+      console.log(cachedResult);
+    }
   }
 }

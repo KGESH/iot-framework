@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { AuthUserService } from './auth-user.service';
 import {
   AuthUserDto,
@@ -13,10 +13,13 @@ import { CreateUserDto, User } from '@iot-framework/entities';
 export class AuthUserController {
   constructor(private readonly authService: AuthUserService) {}
 
+  @Get('me/:id')
+  async getUser(@Param('id') userId: string): Promise<ResponseEntity<Partial<User>>> {
+    return await this.authService.getUserWithoutPassword(parseInt(userId));
+  }
+
   @Post('signup')
-  async signUp(
-    @Body() createUserDto: CreateUserDto
-  ): Promise<ResponseEntity<User>> {
+  async signUp(@Body() createUserDto: CreateUserDto): Promise<ResponseEntity<User>> {
     const result = await this.authService.signUp(createUserDto);
     console.log(`AUTH: Signup res: `, result);
     return result;
@@ -28,16 +31,12 @@ export class AuthUserController {
   }
 
   @Post('signin')
-  async signIn(
-    @Body() signInDto: SignInDto
-  ): Promise<ResponseEntity<AuthUserDto | TokensDto>> {
+  async signIn(@Body() signInDto: SignInDto): Promise<ResponseEntity<AuthUserDto | TokensDto>> {
     return this.authService.signIn(signInDto);
   }
 
   @Post('refresh')
-  async refresh(
-    @Body() refreshTokenDto: RefreshTokenDto
-  ): Promise<ResponseEntity<unknown>> {
+  async refresh(@Body() refreshTokenDto: RefreshTokenDto): Promise<ResponseEntity<unknown>> {
     const { userId, refreshToken } = refreshTokenDto;
 
     return this.authService.regenerateAccessToken(userId, refreshToken);

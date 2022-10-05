@@ -23,6 +23,13 @@ export class AuthUserService {
     private readonly userQueryRepository: UserQueryRepository
   ) {}
 
+  async getUserWithoutPassword(userId: number): Promise<ResponseEntity<Partial<User>>> {
+    const { password, createdAt, deletedAt, updatedAt, ...userWithoutPassword } =
+      await this.userQueryRepository.findOneUserById(userId);
+
+    return ResponseEntity.OK_WITH({ ...userWithoutPassword });
+  }
+
   async signUp(createUserDto: CreateUserDto): Promise<ResponseEntity<User | null>> {
     const { email } = createUserDto;
 
@@ -90,6 +97,7 @@ export class AuthUserService {
     await this.cacheRefreshToken(userId, refreshToken);
 
     return {
+      user: authUserDto,
       accessToken,
       refreshToken,
     };

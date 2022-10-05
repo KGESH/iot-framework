@@ -12,6 +12,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
 
   async validate(email: string, password: string): Promise<TokensDto> {
     const signInResult = await this.authService.signIn(email, password);
+    // console.log(signInResult.data);
 
     if (signInResult.statusCode !== HttpStatus.OK) {
       throw signInResult;

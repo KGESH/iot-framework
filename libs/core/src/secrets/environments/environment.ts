@@ -50,7 +50,7 @@ export const environment = {
   REDIS_HOST: '0.0.0.0',
   REDIS_PORT: 6379,
 
-  MQTT_BROKER_URL: 'mqtt://0.0.0.0:1883',
+  MQTT_BROKER_URL: 'mqtt://43.200.81.115:1883',
 
   JWT_ACCESS_SECRET: 'my_dev_secret',
   JWT_REFRESH_SECRET: 'my_dev_refresh_secret',

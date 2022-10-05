@@ -19,6 +19,10 @@ export class AuthService {
     private readonly authClientService: AuthClientService
   ) {}
 
+  async getUser(userId: number): Promise<ResponseEntity<Omit<User, 'password'>>> {
+    return this.authClientService.get<ResponseEntity<Omit<User, 'password'>>>(`me/${userId}`);
+  }
+
   async signUp(createUserDto: CreateUserDto): Promise<ResponseEntity<User>> {
     return this.authClientService.post<ResponseEntity<User>>('signup', createUserDto);
   }

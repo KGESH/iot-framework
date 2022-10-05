@@ -8,15 +8,22 @@ import { SWAGGER_TAG } from '../../../utils/swagger/enum';
 import { ApiAuthService } from './api-auth.service';
 import { JwtAuthGuard, LocalAuthGuard, ResponseEntity } from '@iot-framework/modules';
 import { Tokens } from './decoratos/tokens.decorator';
-import { CreateUserDto } from '@iot-framework/entities';
+import { CreateUserDto, User } from '@iot-framework/entities';
 import { RefreshTokenDto } from '@iot-framework/modules';
 import { AuthUser } from './decoratos/auth-user.decorator';
 import { AuthUserDto } from './dto/auth-user.dto';
 
 @ApiTags(SWAGGER_TAG.AUTH)
+@ApiBearerAuth()
 @Controller('auth-service')
 export class ApiAuthController {
   constructor(private userService: ApiAuthService) {}
+
+  @Get('me')
+  @UseGuards(JwtAuthGuard)
+  async getUser(@AuthUser() authUser: AuthUserDto): Promise<ResponseEntity<Partial<User>>> {
+    return this.userService.getUser(authUser.id);
+  }
 
   @Post('signup')
   @ApiCreatedResponse({ description: 'Sign up result example' })
@@ -27,7 +34,7 @@ export class ApiAuthController {
   /** Todo: extract to auth MS */
   @Get('jwt')
   // @ApiBearerAuth()
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   jwt() {
     return true;
   }
@@ -47,7 +54,7 @@ export class ApiAuthController {
   @UseGuards(LocalAuthGuard)
   @ApiOkResponse({ description: 'Login API', type: ResponseEntity })
   async signIn(@Body() signInDto: SignInDto, @Tokens() tokens: TokensDto, @Res() res: Response) {
-    const { accessToken, refreshToken } = tokens;
+    const { user, accessToken, refreshToken } = tokens;
 
     res.cookie('auth-cookie', refreshToken, {
       httpOnly: true,
