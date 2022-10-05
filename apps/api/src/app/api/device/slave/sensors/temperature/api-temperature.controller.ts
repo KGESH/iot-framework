@@ -48,8 +48,10 @@ export class ApiTemperatureController {
   ) {
     try {
       await this.apiTemperatureService.deleteMockTemperatures(masterId, slaveId);
+      return ResponseEntity.OK();
     } catch (e) {
       console.log(e);
+      return ResponseEntity.ERROR_WITH(e, HttpStatus.BAD_REQUEST);
     }
   }
 }
