@@ -20,7 +20,7 @@ export class ConnectionService implements TypeOrmOptionsFactory {
       autoLoadEntities: true,
       namingStrategy: new SnakeNamingStrategy(),
       synchronize: process.env.NODE_ENV !== 'production',
-      logging: process.env.NODE_ENV !== 'production',
+      // logging: process.env.NODE_ENV !== 'production',
     } as TypeOrmModuleOptions;
   }
 }

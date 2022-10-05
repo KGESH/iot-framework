@@ -17,10 +17,11 @@ export class DeviceSlaveController {
     console.log(`@@@@@@@@@@@ Recv Slave STATE@@@@@@@@@@@`);
     console.log(context.getTopic());
     console.log(context.getPacket());
-    const stateDto = new SlaveStateDto(masterId, slaveId, sensorName as Sensor);
-    const key = stateDto.getRunningStateKey();
 
     if (runtimeMinutes > 0) {
+      const stateDto = new SlaveStateDto(masterId, slaveId, sensorName as Sensor);
+      const key = stateDto.getRunningStateKey();
+
       const cachedResult = await this.cacheManager.set<string>(key, 'on', {
         ttl: runtimeMinutes * RedisTTL.MINUTE, // make minutes -> second
       });
