@@ -1,4 +1,4 @@
-# Iot Framework
+# IoT Framework
 
 Nestjs Monorepo with NX
 
