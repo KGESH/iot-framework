@@ -1,11 +1,11 @@
-import { Body, Controller, Get, HttpStatus, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Post, Query, UseGuards } from '@nestjs/common';
 import { SWAGGER_TAG } from '../../utils/swagger/enum';
 import { DeviceMasterService } from './device-master.service';
 import { ApiTags } from '@nestjs/swagger';
 import { DevicePollingService } from './device-polling.service';
 import { CreateMasterDto } from './dto/create-master.dto';
 import { EPollingState } from './types/polling.enum';
-import { ResponseEntity } from '@iot-framework/modules';
+import { JwtAuthGuard, ResponseEntity } from '@iot-framework/modules';
 import { Master } from '@iot-framework/entities';
 
 @ApiTags(SWAGGER_TAG.MASTER)

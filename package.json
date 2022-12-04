@@ -5,6 +5,7 @@
   "scripts": {
     "prestart": "npm run start:db:local && npm run start:redis:local",
     "start": "nx run-many --target=serve --all",
+    "start:dev": "nx run-many --target=serve --all",
     "start:api": "nx serve api",
     "start:device": "nx serve device",
     "start:auth": "nx serve auth",

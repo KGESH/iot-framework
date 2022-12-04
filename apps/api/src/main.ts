@@ -14,6 +14,7 @@ async function bootstrap() {
   const url = secretService.API_GATEWAY_HOST;
   const port = secretService.API_GATEWAY_PORT;
 
+  app.use(cookieParser());
   app.enableCors({
     origin: true,
     credentials: true,
@@ -26,14 +27,11 @@ async function bootstrap() {
       transform: true,
     })
   );
-  app.use(cookieParser());
 
   buildSwagger(app);
   await app.listen(port);
 
-  Logger.log(
-    `🚀 Application is running on: http://${url}:${port}/${globalPrefix}`
-  );
+  Logger.log(`🚀 Application is running on: http://${url}:${port}/${globalPrefix}`);
 }
 
 bootstrap();

@@ -56,4 +56,6 @@ export const environment = {
   JWT_REFRESH_SECRET: 'my_dev_refresh_secret',
   JWT_ACCESS_EXPIRES_IN: '300m',
   JWT_REFRESH_EXPIRES_IN: '14d',
+
+  COOKIE_DOMAIN: 'http://localhost:3000',
 };

@@ -48,6 +48,9 @@ export class ApiTemperatureController {
 
   @Delete('mock')
   async deleteMock(@Query('masterId') masterId: number, @Query('slaveId') slaveId: number) {
-    return await this.temperatureRepository.deleteMockData(masterId, slaveId);
+    const deleteResult = await this.temperatureRepository.deleteMockData(masterId, slaveId);
+
+    console.log(`delte result:`, deleteResult);
+    return deleteResult;
   }
 }

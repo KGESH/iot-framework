@@ -23,6 +23,7 @@ export class ApiTemperatureController {
 
   @Post('points')
   async getAveragePoints(@Body() temperatureBetweenDto: TemperatureBetweenDto) {
+    console.log(`Call points!`);
     return this.apiTemperatureService.getAveragePoints(temperatureBetweenDto);
   }
 

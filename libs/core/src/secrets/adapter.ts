@@ -1,5 +1,6 @@
 import {
   API_GATEWAY_ENV,
+  COOKIE_ENV,
   DATABASE_ENV,
   DEVICE_MS_ENV,
   JWT_ENV,
@@ -47,4 +48,6 @@ export abstract class ISecretService {
   JWT_REFRESH_SECRET: JWT_ENV | string;
   JWT_ACCESS_EXPIRES_IN: JWT_ENV | string;
   JWT_REFRESH_EXPIRES_IN: JWT_ENV | string;
+
+  COOKIE_DOMAIN: COOKIE_ENV | string;
 }

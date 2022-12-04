@@ -19,7 +19,7 @@ export class AuthUserController {
   }
 
   @Post('signup')
-  async signUp(@Body() createUserDto: CreateUserDto): Promise<ResponseEntity<User>> {
+  async signUp(@Body() createUserDto: CreateUserDto): Promise<ResponseEntity<null>> {
     const result = await this.authService.signUp(createUserDto);
     console.log(`AUTH: Signup res: `, result);
     return result;

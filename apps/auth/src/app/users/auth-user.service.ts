@@ -30,12 +30,12 @@ export class AuthUserService {
     return ResponseEntity.OK_WITH({ ...userWithoutPassword });
   }
 
-  async signUp(createUserDto: CreateUserDto): Promise<ResponseEntity<User | null>> {
+  async signUp(createUserDto: CreateUserDto): Promise<ResponseEntity<null>> {
     const { email } = createUserDto;
 
     const existUser = await this.userQueryRepository.findOneByEmail(email);
     if (existUser) {
-      return ResponseEntity.ERROR_WITH('User already exist!', HttpStatus.CONFLICT);
+      return ResponseEntity.ERROR_WITH('User already exist!', HttpStatus.BAD_REQUEST);
     }
 
     /** Todo: Validate phone number service */
@@ -81,7 +81,7 @@ export class AuthUserService {
 
     const isCorrectPassword = await compare(rawPassword, foundUser.password);
     if (isCorrectPassword) {
-      const { password, createdAt, ...userWithoutPassword } = foundUser;
+      const { password, createdAt, updatedAt, deletedAt, ...userWithoutPassword } = foundUser;
       return ResponseEntity.OK_WITH<AuthUserDto>(userWithoutPassword);
     }
 
