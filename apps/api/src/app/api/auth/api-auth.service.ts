@@ -1,14 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { ISecretService } from '@iot-framework/core';
 import { CreateUserDto, User } from '@iot-framework/entities';
 import { AuthService, RefreshTokenDto, ResponseEntity } from '@iot-framework/modules';
 
 @Injectable()
 export class ApiAuthService {
-  constructor(
-    private readonly secretService: ISecretService,
-    private readonly authService: AuthService
-  ) {}
+  constructor(private readonly authService: AuthService) {}
 
   getUser(userId: number): Promise<ResponseEntity<Omit<User, 'password'>>> {
     return this.authService.getUser(userId);

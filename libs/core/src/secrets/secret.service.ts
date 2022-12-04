@@ -42,4 +42,7 @@ export class SecretService implements ISecretService {
   JWT_REFRESH_SECRET = environment.JWT_REFRESH_SECRET;
   JWT_ACCESS_EXPIRES_IN = environment.JWT_ACCESS_EXPIRES_IN;
   JWT_REFRESH_EXPIRES_IN = environment.JWT_REFRESH_EXPIRES_IN;
+
+  /** JWT Cookie */
+  COOKIE_DOMAIN = environment.COOKIE_DOMAIN;
 }

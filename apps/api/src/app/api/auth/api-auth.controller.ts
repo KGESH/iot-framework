@@ -17,7 +17,7 @@ import { AuthUserDto } from './dto/auth-user.dto';
 @ApiBearerAuth()
 @Controller('auth-service')
 export class ApiAuthController {
-  constructor(private userService: ApiAuthService) {}
+  constructor(private readonly userService: ApiAuthService) {}
 
   @Get('me')
   @UseGuards(JwtAuthGuard)
@@ -31,19 +31,11 @@ export class ApiAuthController {
     return this.userService.signUp(createUserDto);
   }
 
-  /** Todo: extract to auth MS */
-  @Get('jwt')
-  // @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
-  jwt() {
-    return true;
-  }
-
   @Post('refresh')
   async refreshAccessToken(@Req() req: Request, @Res() res: Response) {
-    const refreshTokenDto: RefreshTokenDto = req.cookies['auth-cookie'];
+    const refreshTokenDto: RefreshTokenDto = req.cookies['auth'];
     if (!refreshTokenDto) {
-      return res.send(ResponseEntity.ERROR_WITH('Auth Cookie Not Found', HttpStatus.NOT_FOUND));
+      return res.send(ResponseEntity.ERROR_WITH('Auth Cookie Not Found', HttpStatus.UNAUTHORIZED));
     }
 
     const response = await this.userService.refresh(refreshTokenDto);
@@ -56,30 +48,30 @@ export class ApiAuthController {
   async signIn(@Body() signInDto: SignInDto, @Tokens() tokens: TokensDto, @Res() res: Response) {
     const { user, accessToken, refreshToken } = tokens;
 
-    res.cookie('auth-cookie', refreshToken, {
-      httpOnly: true,
-      domain: process.env.COOKIE_DOMAIN,
-    });
+    res.cookie(
+      'auth',
+      { user, refreshToken },
+      {
+        httpOnly: true,
+        maxAge: 14 * 24 * 60 * 60 * 1000, // 14 Days
+      }
+    );
 
     return res.send(ResponseEntity.OK_WITH(accessToken));
   }
 
-  @Get('signout')
-  @ApiBearerAuth()
-  // @UseGuards(JwtAuthGuard)
+  @Post('signout')
+  @UseGuards(JwtAuthGuard)
   async signOut(@Req() req: Request, @Res() res: Response, @AuthUser() authUser: AuthUserDto) {
-    const refreshToken = req.cookies['auth-cookie'];
-
+    const refreshToken = req.cookies['auth'];
     if (!refreshToken) {
-      return res.send(ResponseEntity.ERROR_WITH('Cookie Not Exist', HttpStatus.NOT_FOUND));
+      return res.send(ResponseEntity.ERROR_WITH('Cookie Not Exist', HttpStatus.BAD_REQUEST));
     }
 
-    console.log(`Signout User: `, authUser);
     await this.userService.signOut(authUser.id);
 
-    res.clearCookie('auth-cookie', {
-      httpOnly: true,
-      domain: process.env.COOKIE_DOMAIN,
+    res.clearCookie('auth', {
+      maxAge: 0,
     });
 
     return res.send(ResponseEntity.OK());

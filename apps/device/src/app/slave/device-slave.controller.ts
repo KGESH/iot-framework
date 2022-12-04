@@ -14,7 +14,6 @@ export class DeviceSlaveController {
     const [, mId, , sId, sensorName] = context.getTopic().split('/');
     const masterId = parseInt(mId);
     const slaveId = parseInt(sId);
-    console.log(`@@@@@@@@@@@ Recv Slave STATE@@@@@@@@@@@`);
     console.log(context.getTopic());
     console.log(context.getPacket());
 

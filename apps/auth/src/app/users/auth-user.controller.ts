@@ -19,10 +19,8 @@ export class AuthUserController {
   }
 
   @Post('signup')
-  async signUp(@Body() createUserDto: CreateUserDto): Promise<ResponseEntity<User>> {
-    const result = await this.authService.signUp(createUserDto);
-    console.log(`AUTH: Signup res: `, result);
-    return result;
+  async signUp(@Body() createUserDto: CreateUserDto): Promise<ResponseEntity<null>> {
+    return await this.authService.signUp(createUserDto);
   }
 
   @Get('signout')
@@ -37,8 +35,9 @@ export class AuthUserController {
 
   @Post('refresh')
   async refresh(@Body() refreshTokenDto: RefreshTokenDto): Promise<ResponseEntity<unknown>> {
-    const { userId, refreshToken } = refreshTokenDto;
+    console.log(`AUTH SERVER: `, refreshTokenDto);
+    const { user, refreshToken } = refreshTokenDto;
 
-    return this.authService.regenerateAccessToken(userId, refreshToken);
+    return this.authService.regenerateAccessToken(user.id, refreshToken);
   }
 }

@@ -8,6 +8,10 @@ export class UserQueryRepository {
 
   async findOneByEmail(email: string): Promise<User> {
     return this.dataSource.getRepository(User).findOneBy({ email });
+
+    /**
+     * SELECT * FROM users WHERE users.email = email;
+     * */
   }
 
   async findOneUserById(userId: number): Promise<User> {

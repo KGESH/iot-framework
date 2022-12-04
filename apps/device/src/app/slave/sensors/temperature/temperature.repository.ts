@@ -11,6 +11,8 @@ export class TemperatureRepository {
     const slave = await this.dataSource.getRepository(Slave).findOneBy({ masterId, slaveId });
     const slaveFK = slave.id;
 
+    console.log(`slave: `, slave);
+
     return await this.dataSource.getRepository(Temperature).delete({ slaveFK });
   }
 
