@@ -16,7 +16,6 @@ export class ApiWaterPumpController {
   // @UseGuards(RolesGuard([UserRoles.ADMIN, UserRoles.USER]))
   // @UseGuards(JwtAuthGuard)
   async setWaterPumpConfig(@Body() waterPumpDto: WaterPumpConfigDto) {
-    console.log(`Call API: `, waterPumpDto);
     return this.apiWaterPumpService.setWaterPumpConfig(waterPumpDto);
   }
 }

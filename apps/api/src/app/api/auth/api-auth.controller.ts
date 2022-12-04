@@ -12,7 +12,6 @@ import { CreateUserDto, User } from '@iot-framework/entities';
 import { RefreshTokenDto } from '@iot-framework/modules';
 import { AuthUser } from './decoratos/auth-user.decorator';
 import { AuthUserDto } from './dto/auth-user.dto';
-import { ISecretService } from '@iot-framework/core';
 
 @ApiTags(SWAGGER_TAG.AUTH)
 @ApiBearerAuth()
@@ -32,18 +31,9 @@ export class ApiAuthController {
     return this.userService.signUp(createUserDto);
   }
 
-  /** Todo: extract to auth MS */
-  @Get('jwt')
-  // @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
-  jwt() {
-    return true;
-  }
-
   @Post('refresh')
   async refreshAccessToken(@Req() req: Request, @Res() res: Response) {
-    console.log(`refresh token: `, req.cookies['refresh']);
-    const refreshTokenDto: RefreshTokenDto = req.cookies['refresh'];
+    const refreshTokenDto: RefreshTokenDto = req.cookies['auth'];
     if (!refreshTokenDto) {
       return res.send(ResponseEntity.ERROR_WITH('Auth Cookie Not Found', HttpStatus.UNAUTHORIZED));
     }
@@ -58,29 +48,29 @@ export class ApiAuthController {
   async signIn(@Body() signInDto: SignInDto, @Tokens() tokens: TokensDto, @Res() res: Response) {
     const { user, accessToken, refreshToken } = tokens;
 
-    res.cookie('refresh', refreshToken, {
-      httpOnly: true,
-      maxAge: 24 * 60 * 60 * 1000,
-    });
+    res.cookie(
+      'auth',
+      { user, refreshToken },
+      {
+        httpOnly: true,
+        maxAge: 14 * 24 * 60 * 60 * 1000, // 14 Days
+      }
+    );
 
     return res.send(ResponseEntity.OK_WITH(accessToken));
   }
 
   @Post('signout')
-  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   async signOut(@Req() req: Request, @Res() res: Response, @AuthUser() authUser: AuthUserDto) {
-    console.log(`Cookies: `, { ...req?.cookies });
-    const refreshToken = req.cookies['refresh'];
-    console.log(`Signout User: `, authUser);
-
+    const refreshToken = req.cookies['auth'];
     if (!refreshToken) {
       return res.send(ResponseEntity.ERROR_WITH('Cookie Not Exist', HttpStatus.BAD_REQUEST));
     }
 
     await this.userService.signOut(authUser.id);
 
-    res.clearCookie('refresh', {
+    res.clearCookie('auth', {
       maxAge: 0,
     });
 
